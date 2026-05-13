@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>طلبات الجمعية — MealShare</title>
+<link rel="stylesheet" href="../styles/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+</head>
+<body data-protect="true" data-role="charity">
+  <div class="container">
+    <div class="header">
+      <div class="brand"><img src="../assests/logo.png" class="logo" alt="MealShare" style="width:56px;height:56px"><div><h1>MealShare</h1><div class="tagline">لوحة الجمعية</div></div></div>
+      <div><button class="btn" data-logout>تسجيل الخروج</button></div>
+      
+    </div>
+
+    <h3>مرحبًا <span class="welcome" id="welcome-user"></span></h3>
+
+
+     <div class="app-layout" style="margin-top:18px" > 
+      
+      <aside class="sidebar card">
+        <nav class="nav-list">
+          <div class="nav-item active" id="nav-surpluses">الفوائض المتاحة</div>
+          <div class="nav-item" id="nav-requests">طلباتي</div>
+          <div class="nav-item" id="nav4">الإعدادات</div>
+          <div class="nav-item" id="nav-notifications">الإشعارات</div>
+
+        </nav>
+      </aside>
+      <main>
+       
+        
+        <div id="view-surpluses">
+ <!-- قسم الإحصائيات للجمعية -->
+        <div class="stats-dashboard" style="margin-bottom: 20px;">
+          <!-- Stats Cards Row -->
+          <div class="stats-cards-row">
+            <div class="stat-card stat-primary">
+              <div class="stat-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number" id="charity-stat-total">--</span>
+                <span class="stat-label">إجمالي الطلبات</span>
+              </div>
+            </div>
+            
+            <div class="stat-card stat-success">
+              <div class="stat-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number" id="charity-stat-accepted">--</span>
+                <span class="stat-label">طلبات مقبولة</span>
+              </div>
+            </div>
+            
+            <div class="stat-card stat-warning">
+              <div class="stat-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number" id="charity-stat-pending">--</span>
+                <span class="stat-label">طلبات معلقة</span>
+              </div>
+            </div>
+            
+            <div class="stat-card stat-danger">
+              <div class="stat-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number" id="charity-stat-rejected">--</span>
+                <span class="stat-label">طلبات مرفوضة</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Charts Row -->
+          <div class="charts-row">
+            <!-- Requests Status Chart -->
+            <div class="chart-card">
+              <h4 class="chart-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                  <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                </svg>
+                حالة طلباتي
+              </h4>
+              <div class="donut-chart-container">
+                <div class="donut-chart" id="charity-donut-chart">
+                  <svg viewBox="0 0 100 100" class="donut-svg">
+                    <circle class="donut-ring" cx="50" cy="50" r="40"></circle>
+                    <circle class="donut-segment accepted-segment" id="charity-segment-accepted" cx="50" cy="50" r="40"></circle>
+                    <circle class="donut-segment pending-segment" id="charity-segment-pending" cx="50" cy="50" r="40"></circle>
+                    <circle class="donut-segment rejected-segment" id="charity-segment-rejected" cx="50" cy="50" r="40"></circle>
+                  </svg>
+                  <div class="donut-center">
+                    <span class="donut-total" id="charity-total-requests">0</span>
+                    <span class="donut-label">طلب</span>
+                  </div>
+                </div>
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <span class="legend-color accepted"></span>
+                    <span>مقبولة (<span id="charity-legend-accepted">0</span>)</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color pending"></span>
+                    <span>معلقة (<span id="charity-legend-pending">0</span>)</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color rejected"></span>
+                    <span>مرفوضة (<span id="charity-legend-rejected">0</span>)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Activity Progress Chart -->
+            <div class="chart-card">
+              <h4 class="chart-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                ملخص النشاط
+              </h4>
+              <div class="progress-bars-container">
+                <div class="progress-item">
+                  <div class="progress-header">
+                    <span>نسبة القبول</span>
+                    <span class="progress-value" id="charity-acceptance-rate">0%</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill acceptance" id="charity-acceptance-bar"></div>
+                  </div>
+                </div>
+                <div class="progress-item">
+                  <div class="progress-header">
+                    <span>الفوائض المتاحة</span>
+                    <span class="progress-value" id="charity-available-surpluses">0</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill surpluses" id="charity-surpluses-bar"></div>
+                  </div>
+                </div>
+                <div class="progress-item">
+                  <div class="progress-header">
+                    <span>التفاعل مع المؤسسات</span>
+                    <span class="progress-value" id="charity-interaction-rate">0</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill interaction" id="charity-interaction-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <div class="card">
+            <div class="card map-card">
+  <h3>المؤسسات الغذائية القريبة منك</h3>
+  <div id="map"></div>
+</div>
+<br>
+<br>
+ <hr>
+<div class="filters">
+  
+  <select  id="filter-expiry" title="الصلاحية">
+    <option value="">كل الصلاحيات</option>
+    <option value="3">3 ساعات أو أقل</option>
+    <option value="6">من 3 إلى 6 ساعات</option>
+    <option value="12">من 6 إلى 12 ساعة</option>
+  </select>
+</div>
+
+
+
+              <h3>الفوائض المتاحة</h3>
+            <table class="table" aria-label="فوائض متاحة">
+              <thead><tr><th>نوع الوجبة</th><th>المؤسسة</th><th>الكمية</th><th>الصلاحية</th><th>إجراء</th></tr></thead>
+              <tbody id="surplus-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div id = "view-requests" style="display:none">
+          <section class="card">
+            
+            <h3>الطلبات المرسلة</h3>
+            
+            <table class="table"><thead><tr><th>العنصر</th><th>المؤسسة</th><th>الوقت</th><th>الحالة</th><th>تقييم</th></tr></thead><tbody id="charity-requests-body"></tbody></table>
+          </section>
+        </div>
+
+
+       
+
+
+
+        
+        <!-- <div id="view-ratings" style="display:none">
+          <section class="card">
+            <h3>تقييمات المؤسسات</h3>
+            <div id="restaurants-body"></div>
+          </section>
+        </div> -->
+
+
+
+        <div id="view-settings" style="display:none">
+          <div class="card">
+            <h3>الإعدادات</h3>
+            <button id="edit-profile-btn" class="btn"> تعديل الملف الشخصي </button>
+            <button id="edit-email-password-btn" class="btn">ادارة الامان </button>
+
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border);">
+              <h4 style="margin-bottom: 10px; color: var(--primary);">📞 للتواصل مع مدير الموقع</h4>
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+                <!-- <div><strong>الاسم:</strong> Mohamed Galtarghi</div> -->
+                <div><strong>رقم الهاتف:</strong> <a href="tel:+0917207676" style="color: var(--primary); text-decoration: none;">0917207676</a></div>
+                <div><strong>البريد الإلكتروني:</strong> <a href="mailto:mealsharewebsite@gmail.com" style="color: var(--primary); text-decoration: none;">mealsharewebsite@gmail.com</a></div>
+              </div>
+            </div>
+
+        </div>
+        </div>
+
+
+          <div id = "view-notifications" style="display:none">
+          <section class="card">
+            
+            <h3> الاشعارات</h3>
+            
+
+            
+          </section>
+        </div>
+
+
+
+
+
+      </main>
+    </div>
+
+  </div>
+
+<script src="../js/app.js"></script>
+<script src="../js/charity.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+
+
+ </script>
+ 
+</body>
+</html>

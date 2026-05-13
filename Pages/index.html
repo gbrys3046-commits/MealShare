@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MealShare — الصفحة الرئيسية</title>
+
+  <!-- sadaaaaaaaaaaasasdadasa -->
+   
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <img src="../assests/logo.png" alt="MealShare logo">
+        </div>
+        <div>
+          <h1>MealShare</h1>
+          <div class="tagline">تقليل هدر الطعام وربط المؤسسات بالجمعيات الخيرية</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="تنقل الموقع">
+        <!-- <button class="btn">كيف يعمل</button>
+        <button class="btn">المزايا</button> -->
+      </nav>
+    </header>
+ 
+
+    <div class="hero">
+
+      <div class="intro">
+        <h2>أنقذ الطعام وسهّل توزيعه</h2>
+        <p>
+          منصة تربط المؤسسات الغذائية (مطاعم، فنادق، مخابز) بالجمعيات الخيرية لتقليل هدر الطعام وتوفير وجبات للمحتاجين.
+          إشعارات حسب الموقع، إدارة الطلبات، ونظام تقييم موثوق.
+        </p>
+
+        <div class="actions">
+          <button class="btn primary" id="btn-open-auth-hero">سجّل أو أنشئ حسابًا</button>
+          <button class="btn" id="btn-advantages">التعرّف على المنصة</button>
+        </div>
+
+        <section class="features card">
+          <h3 class="section-title">مزايا سريعة</h3>
+
+          <div class="grid3">
+            <div class="feature-card">
+              <strong>إشعارات قريبة</strong>
+              <div class="small">إشعار الجمعيات القريبة عند نشر فائض</div>
+            </div>
+
+            <div class="feature-card">
+              <strong>تقارير وإحصاءات</strong>
+              <div class="small">تتبع الكميات المتبرَّع بها وتأثير المنصة</div>
+            </div>
+
+            <div class="feature-card">
+              <strong>تقييمات وثقة</strong>
+              <div class="small">نظام تقييم متبادل بين المؤسسات والجمعيات</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <footer>
+      <!-- <div class="socials">
+        <a href="#" target="_blank" title="Facebook"><i class="fab fa-facebook-square"></i></a>
+        <a href="#" target="_blank" title="Twitter"><i class="fab fa-twitter-square"></i></a>
+        <a href="#" target="_blank" title="Instagram"><i class="fab fa-instagram-square"></i></a>
+      </div> -->
+      © MealShare 2026 — جميع الحقوق محفوظة · تواصل  mealsharewebsite@gmail.com
+    </footer>
+
+  </div>
+
+
+  <aside class="hidden">
+    <div class="card" id="auth-panel">
+      <div  class="tabs" role="tablist" aria-label="تبديل تسجيل / إنشاء">
+        <div id="t1" class="tab active" data-tab="login" role="tab" aria-selected="true">تسجيل الدخول</div>
+        <div id="t2" class="tab" data-tab="register" role="tab" aria-selected="false">إنشاء حساب</div>
+      </div>
+
+      <div id="login">
+        <form id="form-login" novalidate>
+          <div class="field">
+            <label for="email">البريد الإلكتروني</label>
+            <input id="email" type="email" placeholder="name@example.com" required>
+          </div>
+
+            <div class="field" style="position:relative">
+              <label for="pwd">كلمة المرور</label>
+              <div style="position:relative">
+                <input id="pwd" type="password" placeholder="••••••••" required minlength="6" maxlength="20" style="padding-left:40px">
+                <button type="button" id="toggle-pass3" aria-pressed="false" aria-label="إظهار كلمة المرور" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
+                  <svg id="eye-open3" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="#333" stroke-width="1.2"/>
+                    <circle cx="12" cy="12" r="3" stroke="#333" stroke-width="1.2"/>
+                  </svg>
+                  <svg id="eye-closed3" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+                    <path d="M3 3l18 18" stroke="#333" stroke-width="1.5"/>
+                    <path d="M10.59 10.59A3 3 0 0113.41 13.41" stroke="#333" stroke-width="1.2"/>
+                    <path d="M2 12s4-7 10-7c2 0 3.5.5 5 1.5" stroke="#333" stroke-width="1.2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+
+      <br>
+
+
+
+          <button class="btn-block" type="submit">تسجيل الدخول</button>
+          <a href="#ff" class="small-link" data-forgot>نسيت كلمة المرور؟</a>
+        </form>
+      </div>
+
+      <div id="register" class="hidden">
+        <form id="form-register" novalidate>
+          <div id="register-step-1">
+            <div class="select-account">
+              <div class="chip active" data-role="restaurant">مؤسسة غذائية</div>
+            </div>
+
+            <div class="field"><label for="rname">الاسم الكامل</label><input id="rname" type="text" placeholder="الاسم أو اسم المؤسسة" required maxlength="20"></div>
+            <div class="field"><label for="remail">البريد الإلكتروني</label><input id="remail" type="email" placeholder="name@example.com" required></div>
+            <div class="field"><label for="rphone">رقم الهاتف</label><input id="rphone" type="tel" placeholder="09xxxxxxxx" value="09" required oninput="this.value= this.value.replace(/[^0-9]/g,''); if(!this.value.startsWith('09')) this.value='09'+this.value.replace(/^0?9?/,'');" maxlength="10"></div>
+            <div class="field"><label for="raddress">العنوان</label><input id="raddress" type="text" placeholder="العنوان" required maxlength="20"></div>
+
+
+
+            <div class="field">
+                  <label>اختر الموقع من الخريطة</label>
+                  <div id="instution-map"  tabindex="-1" style="height: 300px; border-radius: 8px; margin-bottom: 10px; z-index: 999999;"></div>
+                </div>
+
+
+
+            <div class="field" style="display: none;"><label for="lat&lng">Lat</label><input id="lat" type="number" required placeholder="0" value="" step="0.000001"   ><label for="lat&lng">Lng</label><input id="lng" type="number" required placeholder="0" value="" step="0.000001"></div>
+            <div class="field"><label for="desc">الوصف</label><textarea id="desc" type="" placeholder="وصف المؤسسة" rows="5"  maxlength="255" required></textarea></div>
+            
+
+            <div class="field">
+              <label for="rpass">كلمة المرور</label>
+              <div style="position:relative">
+                <input id="rpass" type="password" required placeholder="••••••" minlength="6" maxlength="20" style="padding-left:40px">
+                <button type="button" id="toggle-pass" aria-pressed="false" aria-label="إظهار كلمة المرور" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
+                  <svg id="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="#333" stroke-width="1.2"/>
+                    <circle cx="12" cy="12" r="3" stroke="#333" stroke-width="1.2"/>
+                  </svg>
+                  <svg id="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+                    <path d="M3 3l18 18" stroke="#333" stroke-width="1.5"/>
+                    <path d="M10.59 10.59A3 3 0 0113.41 13.41" stroke="#333" stroke-width="1.2"/>
+                    <path d="M2 12s4-7 10-7c2 0 3.5.5 5 1.5" stroke="#333" stroke-width="1.2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="rpass2">تأكيد كلمة المرور</label>
+              <div style="position:relative">
+                <input id="rpass2" type="password" required placeholder="••••••" minlength="6" maxlength="20" style="padding-left:40px">
+                <button type="button" id="toggle-pass2" aria-pressed="false" aria-label="إظهار كلمة المرور" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;">
+                  <svg id="eye-open2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="#333" stroke-width="1.2"/>
+                    <circle cx="12" cy="12" r="3" stroke="#333" stroke-width="1.2"/>
+                  </svg>
+                  <svg id="eye-closed2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+                    <path d="M3 3l18 18" stroke="#333" stroke-width="1.5"/>
+                    <path d="M10.59 10.59A3 3 0 0113.41 13.41" stroke="#333" stroke-width="1.2"/>
+                    <path d="M2 12s4-7 10-7c2 0 3.5.5 5 1.5" stroke="#333" stroke-width="1.2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <button class="btn-block" type="button" id="btn-register-continue" style="margin-top: 20px;">إنشاء حساب</button>
+          </div>
+
+          <div id="register-step-2" class="hidden">
+            <h4 style="text-align:center;">تحقق من بريدك الإلكتروني</h4>
+            <div class="register-otp-note" style="margin: 10px 0; background:#f9f9f9; padding:12px; border-radius:4px; font-size:0.9em; line-height:1.5;"></div>
+            
+            <div class="field">
+              <label for="r-otp">رمز التحقق</label>
+              <input id="r-otp" type="text" placeholder="000000" style="text-align:center; letter-spacing: 5px; font-size: 1.2em;">
+            </div>
+            
+            <button class="btn-block" type="submit">تأكيد الرمز وإتمام التسجيل</button>
+            <button class="btn-block" type="button" id="btn-register-back" style="background:none; color:#666; border:1px solid #ccc; margin-top:10px;">رجوع لتعديل البيانات</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="reset-password" class="hidden">
+        <h3 style="margin-top:0; margin-bottom:1rem; text-align:center;">استعادة كلمة المرور</h3>
+        <form id="form-reset">
+          <div id="reset-step-1">
+            <div class="field">
+              <label for="reset-email">البريد الإلكتروني</label>
+              <input id="reset-email" type="email" placeholder="name@example.com">
+            </div>
+            <button class="btn-block" type="button" id="btn-reset-continue">استمرار</button>
+          </div>
+          
+          <div id="reset-step-2" class="hidden">
+            <div class="reset-note" style="margin: 10px 0; background:#f9f9f9; padding:8px; border-radius:4px; font-size:0.9em; min-height: 20px;"></div>
+
+            <div class="field">
+              <label for="reset-token">رمز التحقق</label>
+              <input id="reset-token" type="text" placeholder="الرمز المرسل">
+            </div>
+            <div class="field">
+              <label for="reset-newpass">كلمة المرور الجديدة</label>
+
+<div style="position:relative">
+              <input id="reset-newpass" type="password" placeholder="••••••••" minlength="6" maxlength="20" autocomplete="off">
+<button type="button" id="toggle-pass4" aria-pressed="false"  aria-label="إظهار كلمة المرور" >
+    <!-- أيقونة عين بسيطة (SVG) -->
+    <svg id="eye-open4" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="#333" stroke-width="1.2"/>
+      <circle cx="12" cy="12" r="3" stroke="#333" stroke-width="1.2"/>
+    </svg>
+    <svg id="eye-closed4" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+      <path d="M3 3l18 18" stroke="#333" stroke-width="1.5"/>
+      <path d="M10.59 10.59A3 3 0 0113.41 13.41" stroke="#333" stroke-width="1.2"/>
+      <path d="M2 12s4-7 10-7c2 0 3.5.5 5 1.5" stroke="#333" stroke-width="1.2"/>
+    </svg>
+  </button>
+</div>
+         </div>
+            <button class="btn-block" type="submit">تغيير كلمة المرور</button>
+          </div>
+
+          <a href="#f" class="small-link2" data-back-login style="display: block; margin-top: 10px; text-align: center;">عودة لتسجيل الدخول</a>
+        </form>
+      </div>
+
+    </div>
+  </aside>
+
+
+  <div id="auth-modal-overlay" class="auth-modal-overlay hidden" aria-hidden="false">
+    <div class="auth-modal" role="dialog" aria-modal="true">
+      <button class="auth-close-btn" aria-label="إغلاق">×</button>
+      <div id="auth-modal-body" class="auth-modal-body"><!-- app.js will move #auth-panel here --></div>
+    </div>
+  </div>
+
+
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script src="../js/app.js"></script>
+
+  <script src="../js/index.js"></script>
+
+
+</body>
+</html>

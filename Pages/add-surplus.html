@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>رفع فائض — MealShare</title>
+  <link rel="stylesheet" href="../styles/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body data-protect="true" data-role="restaurant">
+  <div class="container">
+    <div class="header">
+      <div class="brand"><img src="../assests/logo.png" class="logo" alt="MealShare" style="width:56px;height:56px"><div><h1>MealShare</h1><div class="tagline">نشر فائض جديد</div></div></div>
+      <div><button class="btn" onclick="location.href='dashboard-restaurant.html'">العودة للوحة</button></div>
+    </div>
+
+    <div style="margin-top:18px">
+      <div class="card" style="max-width:760px;margin:auto">
+        <h3>تفاصيل الفائض</h3>
+        <form id="add-surplus-form" autocomplete="on" novalidate>
+          <label for="surplus-title">نوع الوجبة</label>
+          <input class="supt" id="surplus-title" name="title" type="text" placeholder="مثال: صوانٍ جاهزة" class="field" maxlength="20">
+
+          <label for="surplus-qty">الكمية / الوحدة</label>
+          <input class="supt" id="surplus-qty" name="qty" type="text" placeholder="مثال: 20" class="field" maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g,'').replace(/^0+/,'');">
+
+          <label for="surplus-expiry">مدة الصلاحية</label>
+          <select class="supt" id="surplus-expiry" name="expiry" class="field"><option value="3">3 ساعات</option><option value="6" selected>6 ساعات</option><option value="12" selected>12 ساعة</option></select>
+
+          <label for="surplus-desc">وصف (اختياري)</label>
+          <textarea class="supt" id="surplus-desc" name="desc" rows="4" columns="4" maxlength="255" class="field" placeholder="ملاحظات حول التغليف أو التحضير"></textarea>
+
+          
+
+          <div style="display:flex;gap:10px;margin-top:14px">
+            <!-- <button class="btn" type="button" id="btn-geo">تحديد الموقع</button> -->
+            <button class="btn-block" type="submit">نشر الفائض الآن</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/rest.js"></script>
+</body>
+</html>

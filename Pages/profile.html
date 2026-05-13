@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الملف التعريفي — MealShare</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <div class="brand">
+      <div class="logo">
+        <img src="../assests/logo.png" alt="MealShare logo">
+      </div>
+      <div>
+        <h1 id="org-name">جاري التحميل...</h1>
+        <div class="tagline" id="org-type">...</div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="history.back()">رجوع</button>
+  </header>
+
+  <div class="card" style="margin-top:25px">
+
+    <h3>معلومات المؤسسة</h3>
+
+    <div class="grid-2">
+
+      <div>
+        <label>اسم المؤسسة</label>
+        <div class="small" id="org-name-view">-</div>
+      </div>
+
+      <div>
+        <label>نوع النشاط</label>
+        <div class="small" id="org-type-view">-</div>
+      </div>
+
+      <div>
+        <label>العنوان</label>
+        <div class="small" id="org-address">-</div>
+      </div>
+
+      <div>
+        <label>رقم التواصل</label>
+        <div class="small" id="org-phone">-</div>
+      </div>
+
+      <div id="rating-info-1">
+        <label>التقييم</label>
+        <div class="small" id="org-rating">-</div>
+      </div>
+
+      <div id="rating-info-2">
+        <label>عدد التقييمات</label>
+        <div class="small" id="org-reviews">-</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card" id="charity-evaluations-card" style="margin-top:20px; display:none;">
+    <h3>التقييمات</h3>
+    <div id="charity-evaluations-list" style="margin-top:15px; display:flex; flex-direction:column; gap:10px;">
+      <!-- Evaluations will be listed here -->
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h3>نبذة عن المؤسسة</h3>
+    <p id="org-desc" style="color:var(--muted)">
+      جاري التحميل...
+    </p>
+  </div>
+
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+
+
+// CRITICAL: Use same hostname as current page to ensure cookies are sent
+const API_BASE = `http://${window.location.hostname}:3000/api`;
+
+// Utility Functions 
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function showToast(message, type = 'info') {
+  const existingToast = document.querySelector('.toast-notification');
+  if (existingToast) existingToast.remove();
+  
+  const toast = document.createElement('div');
+  toast.className = `toast-notification toast-${type}`;
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+    background: ${type === 'success' ? '#00c4a7' : type === 'warn' ? '#f59e0b' : type === 'danger' ? '#ef4444' : '#3b82f6'};
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+//  API Functions 
+async function fetchUserByEmail(email) {
+  try {
+    const res = await fetch(`${API_BASE}/users/${encodeURIComponent(email)}`, {
+      credentials: 'include'
+    });
+    if (!res.ok) {
+      if (res.status === 404) return null;
+      throw new Error('Failed to fetch user');
+    }
+    return await res.json();
+  } catch (err) {
+    console.error("❌ Fetch user error:", err);
+    return null;
+  }
+}
+
+async function fetchRatingsForRestaurant(email) {
+  try {
+    const res = await fetch(`${API_BASE}/ratings/restaurant/${encodeURIComponent(email)}`, {
+      credentials: 'include'
+    });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (err) {
+    console.error("❌ Fetch ratings error:", err);
+    return [];
+  }
+}
+
+async function fetchRatingsAvg(email) {
+  try {
+    const res = await fetch(`${API_BASE}/ratings/restaurant/${encodeURIComponent(email)}/avg`, {
+      credentials: 'include'
+    });
+    if (!res.ok) return { staff_behavior_avg: 0, total_ratings: 0 };
+    return await res.json();
+  } catch (err) {
+    console.error("❌ Fetch ratings avg error:", err);
+    return { staff_behavior_avg: 0, total_ratings: 0 };
+  }
+}
+
+//  Render Profile 
+async function renderProfile() {
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get("email");
+
+  if (!email) {
+    showToast("لا يوجد email في الرابط", "warn");
+    document.getElementById("org-name").innerText = "خطأ";
+    document.getElementById("org-desc").innerText = "لا يوجد email في الرابط";
+    return;
+  }
+
+  // Fetch user data
+  const user = await fetchUserByEmail(email);
+
+  if (!user) {
+    showToast("لا يوجد حساب بهذه البيانات", "warn");
+    document.getElementById("org-name").innerText = "غير موجود";
+    document.getElementById("org-desc").innerText = "لا يوجد مستخدم بهذا البريد الإلكتروني";
+    return;
+  }
+
+  // Update basic info
+  document.getElementById("org-name").innerText = user.name || "-";
+  document.getElementById("org-name-view").innerText = user.name || "-";
+  
+  const roleText = user.role === "restaurant" ? "مؤسسة غذائية" : 
+                   user.role === "charity" ? "جمعية خيرية" : user.role;
+  document.getElementById("org-type").innerText = roleText;
+  document.getElementById("org-type-view").innerText = roleText;
+
+  document.getElementById("org-phone").innerText = user.phone || "-";
+  document.getElementById("org-address").innerText = user.address || "-";
+  document.getElementById("org-desc").innerText = user.description || "لا يوجد وصف";
+
+  // Handle ratings based on role
+  if (user.role === "charity") {
+    // Hide rating section for charities
+    document.getElementById("rating-info-1").style.display = "none";
+    document.getElementById("rating-info-2").style.display = "none";
+  } else {
+    // Fetch and display ratings for restaurants
+    const avgData = await fetchRatingsAvg(email);
+    const ratings = await fetchRatingsForRestaurant(email);
+
+    // Handle null values from database - calculate overall average
+    const staffAvg = parseFloat(avgData.staff_behavior_avg) || 0;
+    const timelinessAvg = parseFloat(avgData.timeliness_avg) || 0;
+    const packagingAvg = parseFloat(avgData.packaging_avg) || 0;
+    const totalRatings = avgData.total_ratings || ratings.length || 0;
+
+    // Calculate overall average (only from non-zero values)
+    let validAverages = [];
+    if (staffAvg > 0) validAverages.push(staffAvg);
+    if (timelinessAvg > 0) validAverages.push(timelinessAvg);
+    if (packagingAvg > 0) validAverages.push(packagingAvg);
+    
+    const overallAvg = validAverages.length > 0 
+      ? (validAverages.reduce((a, b) => a + b, 0) / validAverages.length) 
+      : 0;
+
+    // Display ratings with decimal places
+    if (totalRatings > 0 && overallAvg > 0) {
+      document.getElementById("org-rating").innerText = `⭐ ${overallAvg.toFixed(1)} / 5`;
+    } else {
+      document.getElementById("org-rating").innerText = "لا يوجد تقييمات بعد";
+    }
+    document.getElementById("org-reviews").innerText = `${totalRatings} تقييم`;
+
+    // Display individual ratings if available
+    if (ratings.length > 0) {
+      const evalCard = document.getElementById("charity-evaluations-card");
+      const evalList = document.getElementById("charity-evaluations-list");
+      evalCard.style.display = "block";
+      
+      // Fetch all users to get charity names
+      let charityNamesMap = {};
+      try {
+        const usersRes = await fetch(`${API_BASE}/users`, { credentials: 'include' });
+        if (usersRes.ok) {
+          const users = await usersRes.json();
+          users.forEach(u => { charityNamesMap[u.email] = u.name; });
+        }
+      } catch (e) { console.error("Failed to fetch users for names:", e); }
+      
+      evalList.innerHTML = ratings.map(r => {
+        // Calculate overall rating for this review
+        const staffRating = parseFloat(r.staff_behavior_rating) || 0;
+        const timelinessRating = parseFloat(r.timeliness_rating) || 0;
+        const packagingRating = parseFloat(r.packaging_rating) || 0;
+        
+        let validRatings = [];
+        if (staffRating > 0) validRatings.push(staffRating);
+        if (timelinessRating > 0) validRatings.push(timelinessRating);
+        if (packagingRating > 0) validRatings.push(packagingRating);
+        
+        const overallRating = validRatings.length > 0 
+          ? (validRatings.reduce((a, b) => a + b, 0) / validRatings.length) 
+          : 0;
+        
+        // Get charity name or fallback to email
+        const charityName = charityNamesMap[r.charity_email] || r.charity_email;
+        
+        return `
+          <div style="padding:12px; border:1px solid var(--border); border-radius:8px; background:var(--glass);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <strong style="color:var(--primary);">${escapeHtml(charityName)}</strong>
+              <span style="font-size:12px; color:var(--muted);">${new Date(r.created_at).toLocaleDateString("en-US")}</span>
+            </div>
+            <div style="font-size:16px; margin-bottom:4px; font-weight:bold; color:#f59e0b;">⭐ ${overallRating.toFixed(1)} / 5</div>
+            <div style="font-size:12px; color:var(--muted);">
+              معاملة الطاقم: ${r.staff_behavior_rating || "-"} | 
+              الالتزام بالوقت: ${r.timeliness_rating || "-"} | 
+              التغليف: ${r.packaging_rating || "-"}
+            </div>
+            ${r.comment ? `<div style="font-size:13px; margin-top:6px; padding-top:6px; border-top:1px solid var(--border);">${escapeHtml(r.comment)}</div>` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+  }
+
+  console.log("✅ Profile loaded for:", email);
+}
+
+//  DOMContentLoaded 
+document.addEventListener("DOMContentLoaded", () => {
+  renderProfile();
+});
+</script>
+
+</body>
+</html>
