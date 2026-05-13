@@ -74,7 +74,7 @@ app.use(express.urlencoded({ extended: true }));
 //   }
 // }));
 
-
+app.set('trust proxy', 1);
 
 app.use(session({
   name: 'mealshare_session',
