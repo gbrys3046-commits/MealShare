@@ -1,383 +1,412 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>لوحة المشرف — MealShare</title>
-    <link rel="stylesheet" href="../styles/styles.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap"rel="stylesheet"/>
-  </head>
-  <body data-protect="true" data-role="admin">
-    <div class="container">
-      <div class="header">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>لوحة المشرف — MealShare</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body data-protect="true" data-role="admin">
+  <div class="container">
+    <div class="header">
 
 
-        <div class="brand">
-          <img src="../assests/logo.png" class="logo" alt="MealShare" />
-          <div>
-            <h1>MealShare</h1>
-            <div class="tagline">لوحة المشرف</div>
+      <div class="brand">
+        <img src="../assests/logo.png" class="logo" alt="MealShare" />
+        <div>
+          <h1>MealShare</h1>
+          <div class="tagline">لوحة المشرف</div>
+        </div>
+      </div>
+
+
+      <div><button class="btn" data-logout>تسجيل الخروج</button></div>
+
+    </div>
+
+    <div class="app-layout" style="margin-top: 18px">
+      <aside class="sidebar card">
+        <nav class="nav-list">
+          <div class="nav-item active" id="n1"> اللوحة الرئيسية</div>
+          <div class="nav-item" id="n2">إنشاء حساب جمعية</div>
+          <div class="nav-item" id="n3">التقارير</div>
+          <div class="nav-item" id="n4">الاشعارات</div>
+
+
+        </nav>
+      </aside>
+      <main>
+        <div id="view-dashboard">
+          <!-- Enhanced Admin Statistics Section -->
+          <div class="stats-dashboard">
+            <!-- Stats Cards Row -->
+            <div class="stats-cards-row">
+              <div class="stat-card stat-primary">
+                <div class="stat-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-number" id="stat-users-count">--</span>
+                  <span class="stat-label">المستخدمين</span>
+                </div>
+              </div>
+
+              <div class="stat-card stat-success">
+                <div class="stat-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-number" id="stat-requests-count">--</span>
+                  <span class="stat-label">الطلبات</span>
+                </div>
+              </div>
+
+              <div class="stat-card stat-warning">
+                <div class="stat-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                    </path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                  </svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-number" id="stat-surpluses-count">--</span>
+                  <span class="stat-label">الفوائض</span>
+                </div>
+              </div>
+
+              <div class="stat-card stat-restaurant">
+                <div class="stat-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 21h18"></path>
+                    <path d="M5 21V7l8-4v18"></path>
+                    <path d="M19 21V11l-6-4"></path>
+                    <path d="M9 9v.01"></path>
+                    <path d="M9 12v.01"></path>
+                    <path d="M9 15v.01"></path>
+                    <path d="M9 18v.01"></path>
+                  </svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-number" id="stat-restaurants-count">--</span>
+                  <span class="stat-label">المؤسسات</span>
+                </div>
+              </div>
+
+              <div class="stat-card stat-charity">
+                <div class="stat-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                    </path>
+                  </svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-number" id="stat-charities-count">--</span>
+                  <span class="stat-label">الجمعيات</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+              <!-- Users Distribution Chart -->
+              <div class="chart-card">
+                <h4 class="chart-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                    <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                  </svg>
+                  توزيع المستخدمين
+                </h4>
+                <div class="donut-chart-container">
+                  <div class="donut-chart" id="users-donut-chart">
+                    <svg viewBox="0 0 100 100" class="donut-svg">
+                      <circle class="donut-ring" cx="50" cy="50" r="40"></circle>
+                      <circle class="donut-segment restaurant-segment" id="segment-restaurants" cx="50" cy="50" r="40">
+                      </circle>
+                      <circle class="donut-segment charity-segment" id="segment-charities" cx="50" cy="50" r="40">
+                      </circle>
+                    </svg>
+                    <div class="donut-center">
+                      <span class="donut-total" id="total-users">0</span>
+                      <span class="donut-label">مستخدم</span>
+                    </div>
+                  </div>
+                  <div class="chart-legend">
+                    <div class="legend-item">
+                      <span class="legend-color restaurant"></span>
+                      <span>مؤسسات غذائية (<span id="legend-restaurants">0</span>)</span>
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-color charity"></span>
+                      <span>جمعيات خيرية (<span id="legend-charities">0</span>)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity Summary Chart -->
+              <div class="chart-card">
+                <h4 class="chart-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                  </svg>
+                  ملخص النشاط
+                </h4>
+                <div class="progress-bars-container">
+                  <div class="progress-item">
+                    <div class="progress-header">
+                      <span>الطلبات المقبولة</span>
+                      <span class="progress-value" id="admin-accepted-rate">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill acceptance" id="admin-accepted-bar"></div>
+                    </div>
+                  </div>
+                  <div class="progress-item">
+                    <div class="progress-header">
+                      <span>الطلبات المرفوضة</span>
+                      <span class="progress-value" id="admin-rejected-rate">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill rejected" id="admin-rejected-bar"></div>
+                    </div>
+                  </div>
+                  <div class="progress-item">
+                    <div class="progress-header">
+                      <span>الفوائض النشطة</span>
+                      <span class="progress-value" id="admin-active-surpluses">0</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill surpluses" id="admin-surpluses-bar"></div>
+                    </div>
+                  </div>
+                  <div class="progress-item">
+                    <div class="progress-header">
+                      <span>المستخدمين النشطين</span>
+                      <span class="progress-value" id="admin-active-users">0</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill interaction" id="admin-active-bar"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- جدول المستخدمين المسجلين في لوحة المشرف -->
+          <div class="card" style="margin-top: 12px;     width: 1000px;">
+            <h3>مستخدمون مسجلون</h3>
+
+            <div style="margin-bottom: 15px;">
+              <input type="text" id="dashboard-user-search-input" placeholder="البحث عن مستخدم (الاسم أو البريد)..."
+                style="width: 100%; padding: 10px; border-radius: 8px; border: 5px solid #FF9800; background: var(--glass);">
+            </div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>الاسم</th>
+                  <th>الدور</th>
+                  <th>البريد</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-users-body"></tbody>
+            </table>
           </div>
         </div>
 
-        
-        <div><button class="btn" data-logout>تسجيل الخروج</button></div>
-        
-      </div>
-
-      <div class="app-layout" style="margin-top: 18px">
-        <aside class="sidebar card">
-          <nav class="nav-list">
-            <div class="nav-item active" id="n1"> اللوحة الرئيسية</div>
-            <div class="nav-item" id="n2">إنشاء حساب جمعية</div>
-            <div class="nav-item" id="n3">التقارير</div>
-            <div class="nav-item" id="n4">الاشعارات</div>
-            
-
-          </nav>
-        </aside>
-        <main>
-          <div id="view-dashboard">
-            <!-- Enhanced Admin Statistics Section -->
-            <div class="stats-dashboard">
-              <!-- Stats Cards Row -->
-              <div class="stats-cards-row">
-                <div class="stat-card stat-primary">
-                  <div class="stat-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="9" cy="7" r="4"></circle>
-                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                  </div>
-                  <div class="stat-content">
-                    <span class="stat-number" id="stat-users-count">--</span>
-                    <span class="stat-label">المستخدمين</span>
-                  </div>
-                </div>
-                
-                <div class="stat-card stat-success">
-                  <div class="stat-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                  </div>
-                  <div class="stat-content">
-                    <span class="stat-number" id="stat-requests-count">--</span>
-                    <span class="stat-label">الطلبات</span>
-                  </div>
-                </div>
-                
-                <div class="stat-card stat-warning">
-                  <div class="stat-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                      <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                    </svg>
-                  </div>
-                  <div class="stat-content">
-                    <span class="stat-number" id="stat-surpluses-count">--</span>
-                    <span class="stat-label">الفوائض</span>
-                  </div>
-                </div>
-                
-                <div class="stat-card stat-restaurant">
-                  <div class="stat-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M3 21h18"></path>
-                      <path d="M5 21V7l8-4v18"></path>
-                      <path d="M19 21V11l-6-4"></path>
-                      <path d="M9 9v.01"></path>
-                      <path d="M9 12v.01"></path>
-                      <path d="M9 15v.01"></path>
-                      <path d="M9 18v.01"></path>
-                    </svg>
-                  </div>
-                  <div class="stat-content">
-                    <span class="stat-number" id="stat-restaurants-count">--</span>
-                    <span class="stat-label">المؤسسات</span>
-                  </div>
-                </div>
-                
-                <div class="stat-card stat-charity">
-                  <div class="stat-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                  </div>
-                  <div class="stat-content">
-                    <span class="stat-number" id="stat-charities-count">--</span>
-                    <span class="stat-label">الجمعيات</span>
-                  </div>
-                </div>
+        <div id="view-users" style="display: none">
+          <div class="card">
+            <h3>إنشاء حساب جمعية </h3>
+            <form id="admin-create-charity-form" style="margin-top: 12px" novalidate>
+              <div class="field">
+                <label for="admin-charity-name">اسم الجمعية</label><input id="admin-charity-name" type="text" required
+                  maxlength="20" />
               </div>
-              
-              <!-- Charts Row -->
-              <div class="charts-row">
-                <!-- Users Distribution Chart -->
-                <div class="chart-card">
-                  <h4 class="chart-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                      <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-                    </svg>
-                    توزيع المستخدمين
-                  </h4>
-                  <div class="donut-chart-container">
-                    <div class="donut-chart" id="users-donut-chart">
-                      <svg viewBox="0 0 100 100" class="donut-svg">
-                        <circle class="donut-ring" cx="50" cy="50" r="40"></circle>
-                        <circle class="donut-segment restaurant-segment" id="segment-restaurants" cx="50" cy="50" r="40"></circle>
-                        <circle class="donut-segment charity-segment" id="segment-charities" cx="50" cy="50" r="40"></circle>
-                      </svg>
-                      <div class="donut-center">
-                        <span class="donut-total" id="total-users">0</span>
-                        <span class="donut-label">مستخدم</span>
-                      </div>
-                    </div>
-                    <div class="chart-legend">
-                      <div class="legend-item">
-                        <span class="legend-color restaurant"></span>
-                        <span>مؤسسات غذائية (<span id="legend-restaurants">0</span>)</span>
-                      </div>
-                      <div class="legend-item">
-                        <span class="legend-color charity"></span>
-                        <span>جمعيات خيرية (<span id="legend-charities">0</span>)</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Activity Summary Chart -->
-                <div class="chart-card">
-                  <h4 class="chart-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                    </svg>
-                    ملخص النشاط
-                  </h4>
-                  <div class="progress-bars-container">
-                    <div class="progress-item">
-                      <div class="progress-header">
-                        <span>الطلبات المقبولة</span>
-                        <span class="progress-value" id="admin-accepted-rate">0%</span>
-                      </div>
-                      <div class="progress-bar">
-                        <div class="progress-fill acceptance" id="admin-accepted-bar"></div>
-                      </div>
-                    </div>
-                    <div class="progress-item">
-                      <div class="progress-header">
-                        <span>الطلبات المرفوضة</span>
-                        <span class="progress-value" id="admin-rejected-rate">0%</span>
-                      </div>
-                      <div class="progress-bar">
-                        <div class="progress-fill rejected" id="admin-rejected-bar"></div>
-                      </div>
-                    </div>
-                    <div class="progress-item">
-                      <div class="progress-header">
-                        <span>الفوائض النشطة</span>
-                        <span class="progress-value" id="admin-active-surpluses">0</span>
-                      </div>
-                      <div class="progress-bar">
-                        <div class="progress-fill surpluses" id="admin-surpluses-bar"></div>
-                      </div>
-                    </div>
-                    <div class="progress-item">
-                      <div class="progress-header">
-                        <span>المستخدمين النشطين</span>
-                        <span class="progress-value" id="admin-active-users">0</span>
-                      </div>
-                      <div class="progress-bar">
-                        <div class="progress-fill interaction" id="admin-active-bar"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-           
-
-            <!-- جدول المستخدمين المسجلين في لوحة المشرف -->
-            <div class="card" style="margin-top: 12px;     width: 1000px;">
-              <h3>مستخدمون مسجلون</h3>
-              
-              <div style="margin-bottom: 15px;">
-                <input type="text" id="dashboard-user-search-input" placeholder="البحث عن مستخدم (الاسم أو البريد)..." style="width: 100%; padding: 10px; border-radius: 8px; border: 5px solid #FF9800; background: var(--glass);">
+              <div class="field">
+                <label for="admin-charity-email">البريد الإلكتروني</label><input id="admin-charity-email" type="email"
+                  required />
               </div>
 
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>الاسم</th>
-                    <th>الدور</th>
-                    <th>البريد</th>
-                    <th>إجراء</th>
-                  </tr>
-                </thead>
-                <tbody id="dashboard-users-body"></tbody>
-              </table>
+              <div class="field">
+                <label for="admin-charity-phone">رقم الهاتف</label><input id="admin-charity-phone" type="text"
+                  value="09"
+                  oninput="this.value= this.value.replace(/[^0-9]/g,''); if(!this.value.startsWith('09')) this.value='09'+this.value.replace(/^0?9?/,'');"
+                  maxlength="10" placeholder="09xxxxxxxx" />
+              </div>
+              <div class="field">
+                <label for="admin-charity-address">العنوان</label><input id="admin-charity-address" type="text" required
+                  maxlength="20" />
+              </div>
+
+              <div class="field">
+                <label>اختر الموقع من الخريطة</label>
+                <div id="admin-map" style="height: 300px; border-radius: 8px; margin-bottom: 10px; z-index: 1;"></div>
+              </div>
+
+              <div class="field" id="xy"><label for="lat&lng">Lat</label><input id="lat" type="number" step="any"
+                  required placeholder="0" value=""><label for="lat&lng">Lng</label><input id="lng" type="number"
+                  step="any" required placeholder="0" value=""></div>
+              <div class="field"><label for="desc">الوصف</label><textarea id="desc" type="" placeholder="وصف جمعية"
+                  cols="60" rows="5" required maxlength="255"></textarea></div>
+
+
+
+
+
+              <div style="position:relative">
+                <label for="admin-charity-pass">كلمة المرور</label><input id="admin-charity-pass" type="password"
+                  required minlength="6" maxlength="20" />
+                <button type="button" id="toggle-pass" aria-pressed="false" aria-label="إظهار كلمة المرور">
+                  <!-- أيقونة عين بسيطة (SVG) -->
+                  <svg id="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z"
+                      stroke="#333" stroke-width="1.2" />
+                    <circle cx="12" cy="12" r="3" stroke="#333" stroke-width="1.2" />
+                  </svg>
+                  <svg id="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+                    <path d="M3 3l18 18" stroke="#333" stroke-width="1.5" />
+                    <path d="M10.59 10.59A3 3 0 0113.41 13.41" stroke="#333" stroke-width="1.2" />
+                    <path d="M2 12s4-7 10-7c2 0 3.5.5 5 1.5" stroke="#333" stroke-width="1.2" />
+                  </svg>
+                </button>
+              </div>
+
+              <div style="position:relative">
+                <label for="admin-charity-pass2">تأكيد كلمة المرور</label><input id="admin-charity-pass2"
+                  type="password" required minlength="6" maxlength="20" />
+                <button type="button" id="toggle-pass2" aria-pressed="false" aria-label="إظهار كلمة المرور">
+                  <!-- أيقونة عين بسيطة (SVG) -->
+                  <svg id="eye-open2" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z"
+                      stroke="#333" stroke-width="1.2" />
+                    <circle cx="12" cy="12" r="3" stroke="#333" stroke-width="1.2" />
+                  </svg>
+                  <svg id="eye-closed2" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+                    <path d="M3 3l18 18" stroke="#333" stroke-width="1.5" />
+                    <path d="M10.59 10.59A3 3 0 0113.41 13.41" stroke="#333" stroke-width="1.2" />
+                    <path d="M2 12s4-7 10-7c2 0 3.5.5 5 1.5" stroke="#333" stroke-width="1.2" />
+                  </svg>
+                </button>
+              </div>
+
+
+
+
+
+
+
+
+
+              <div style="text-align: left; margin-top: 8px">
+                <button class="btn" type="submit">إنشاء حساب</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+
+
+
+        <div id="view-reports" style="display: none">
+
+
+          <div class="reports-filter-container">
+            <!-- Type Filter -->
+            <div class="type-filter-wrapper">
+              <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              <select id="filter-type" class="type-select-styled">
+                <option value="">كل الأنواع</option>
+                <option value="request">طلبات</option>
+                <option value="surplus">فوائض</option>
+                <option value="warning">رسائل</option>
+              </select>
+              <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+
+            <!-- Date Filter -->
+            <div class="date-filter-wrapper" id="date-filter-wrapper">
+              <svg class="date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <circle cx="12" cy="16" r="1"></circle>
+              </svg>
+              <input type="date" id="filter-date" class="date-input-styled" placeholder="اختر التاريخ">
+              <button type="button" class="clear-date-btn" id="clear-date-btn" title="مسح التاريخ">×</button>
             </div>
           </div>
 
-          <div id="view-users" style="display: none">
-            <div class="card">
-              <h3>إنشاء حساب جمعية  </h3>
-              <form id="admin-create-charity-form" style="margin-top: 12px" novalidate>
-                <div class="field">
-                  <label for="admin-charity-name">اسم الجمعية</label
-                  ><input id="admin-charity-name" type="text" required maxlength="20" />
-                </div>
-                <div class="field">
-                  <label for="admin-charity-email">البريد الإلكتروني</label
-                  ><input id="admin-charity-email" type="email" required />
-                </div>
-
-                <div class="field">
-                  <label for="admin-charity-phone">رقم الهاتف</label
-                  ><input id="admin-charity-phone" type="text" value="09" oninput="this.value= this.value.replace(/[^0-9]/g,''); if(!this.value.startsWith('09')) this.value='09'+this.value.replace(/^0?9?/,'');" maxlength="10" placeholder="09xxxxxxxx"/>
-                </div>
-                <div class="field">
-                  <label for="admin-charity-address">العنوان</label
-                  ><input id="admin-charity-address" type="text" required maxlength="20" />
-                </div>
-                
-                <div class="field">
-                  <label>اختر الموقع من الخريطة</label>
-                  <div id="admin-map" style="height: 300px; border-radius: 8px; margin-bottom: 10px; z-index: 1;"></div>
-                </div>
-                
-                <div class="field" id = "xy"><label for="lat&lng">Lat</label><input id="lat" type="number" step="any" required placeholder="0" value=""   ><label for="lat&lng">Lng</label><input id="lng" type="number" step="any" required placeholder="0" value=""  ></div>
-                <div class="field"><label for="desc">الوصف</label><textarea id="desc" type="" placeholder="وصف جمعية" cols="60" rows="5" required maxlength="255" ></textarea></div>
 
 
-
-
-
-                <div style="position:relative">
-                  <label for="admin-charity-pass">كلمة المرور</label><input id="admin-charity-pass" type="password" required minlength="6" maxlength="20"/>
-<button type="button" id="toggle-pass" aria-pressed="false"  aria-label="إظهار كلمة المرور" >
-    <!-- أيقونة عين بسيطة (SVG) -->
-    <svg id="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="#333" stroke-width="1.2"/>
-      <circle cx="12" cy="12" r="3" stroke="#333" stroke-width="1.2"/>
-    </svg>
-    <svg id="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
-      <path d="M3 3l18 18" stroke="#333" stroke-width="1.5"/>
-      <path d="M10.59 10.59A3 3 0 0113.41 13.41" stroke="#333" stroke-width="1.2"/>
-      <path d="M2 12s4-7 10-7c2 0 3.5.5 5 1.5" stroke="#333" stroke-width="1.2"/>
-    </svg>
-  </button>
-</div>
-
-<div style="position:relative">
-<label for="admin-charity-pass2">تأكيد كلمة المرور</label><input id="admin-charity-pass2" type="password" required minlength="6" maxlength="20"/>
-<button type="button" id="toggle-pass2" aria-pressed="false"  aria-label="إظهار كلمة المرور" >
-    <!-- أيقونة عين بسيطة (SVG) -->
-    <svg id="eye-open2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7z" stroke="#333" stroke-width="1.2"/>
-      <circle cx="12" cy="12" r="3" stroke="#333" stroke-width="1.2"/>
-    </svg>
-    <svg id="eye-closed2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
-      <path d="M3 3l18 18" stroke="#333" stroke-width="1.5"/>
-      <path d="M10.59 10.59A3 3 0 0113.41 13.41" stroke="#333" stroke-width="1.2"/>
-      <path d="M2 12s4-7 10-7c2 0 3.5.5 5 1.5" stroke="#333" stroke-width="1.2"/>
-    </svg>
-  </button>
-</div>
-               
-
-
-
-
-                
-
-
-
-                <div style="text-align: left; margin-top: 8px">
-                  <button class="btn" type="submit">إنشاء حساب</button>
-                </div>
-              </form>
-            </div>
+          <div class="card">
+            <h3>التقارير</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>النوع</th>
+                  <th>العنصر / النص</th>
+                  <th>الوقت</th>
+                  <th>ID</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="admin-requests-body"></tbody>
+            </table>
           </div>
-            
+        </div>
 
-          
-
-          <div id="view-reports" style="display: none">
-
-
-<div class="reports-filter-container">
-  <!-- Type Filter -->
-  <div class="type-filter-wrapper">
-    <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-    </svg>
-    <select id="filter-type" class="type-select-styled">
-      <option value="">كل الأنواع</option>
-      <option value="request">طلبات</option>
-      <option value="surplus">فوائض</option>
-      <option value="warning">رسائل</option>
-    </select>
-    <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="6 9 12 15 18 9"></polyline>
-    </svg>
-  </div>
-
-  <!-- Date Filter -->
-  <div class="date-filter-wrapper" id="date-filter-wrapper">
-    <svg class="date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-      <line x1="16" y1="2" x2="16" y2="6"></line>
-      <line x1="8" y1="2" x2="8" y2="6"></line>
-      <line x1="3" y1="10" x2="21" y2="10"></line>
-      <circle cx="12" cy="16" r="1"></circle>
-    </svg>
-    <input type="date" id="filter-date" class="date-input-styled" placeholder="اختر التاريخ">
-    <button type="button" class="clear-date-btn" id="clear-date-btn" title="مسح التاريخ">×</button>
-  </div>
-</div>
-
-
-
-            <div class="card">
-              <h3>التقارير</h3>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>النوع</th>
-                    <th>العنصر / النص</th>
-                    <th>الوقت</th>
-                    <th>ID</th>
-                    <th>إجراء</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-requests-body"></tbody>
-              </table>
-            </div>
+        <!-- Notifications View -->
+        <div id="view-notifications" style="display: none">
+          <div class="card">
+            <!-- سيتم ملء المحتوى ديناميكياً عبر JavaScript -->
           </div>
-
-          <!-- Notifications View -->
-          <div id="view-notifications" style="display: none">
-            <div class="card">
-              <!-- سيتم ملء المحتوى ديناميكياً عبر JavaScript -->
-            </div>
-          </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
+  </div>
 
-    <script src="../js/app.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="../js/admin.js"></script>
-  </body>
+  <script src="../js/app.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="../js/admin.js"></script>
+</body>
+
 </html>
