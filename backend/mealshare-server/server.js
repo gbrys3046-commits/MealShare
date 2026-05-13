@@ -119,21 +119,38 @@ app.use('/api/users', usersRoutes);
 app.use("/api/notifications", notificationsRoutes);
 app.use("/api/otp", otpRoutes);
 
-// Static Files
+// // Static Files
+// const path = require('path');
+// const projectRoot = path.join(__dirname, '..', '..');
+
+// // Serve static files (CSS, JS, assets)
+// app.use('/styles', express.static(path.join(projectRoot, 'styles')));
+// app.use('/js', express.static(path.join(projectRoot, 'js')));
+// app.use('/assests', express.static(path.join(projectRoot, 'assests')));
+// app.use('/Pages', express.static(path.join(projectRoot, 'Pages')));
+
+// // Redirect root to index.html
+// app.get('/', (req, res) => {
+//   res.redirect('/Pages/index.html');
+// });
 const path = require('path');
+
+// 1. تحديد جذر المشروع (الرجوع للخلف للوصول للمجلد الرئيسي الذي يحتوي على Pages و js)
 const projectRoot = path.join(__dirname, '..', '..');
 
-// Serve static files (CSS, JS, assets)
+// 2. إعداد المجلدات الثابتة (Static Folders)
+// لجعل الملفات داخل Pages تظهر مباشرة في الرابط (مثل /index.html)
+app.use(express.static(path.join(projectRoot, 'Pages')));
+
+// إعداد مسارات المجلدات الأخرى مع الحفاظ على أسمائها
 app.use('/styles', express.static(path.join(projectRoot, 'styles')));
 app.use('/js', express.static(path.join(projectRoot, 'js')));
-app.use('/assests', express.static(path.join(projectRoot, 'assests')));
-app.use('/Pages', express.static(path.join(projectRoot, 'Pages')));
+app.use('/assests', express.static(path.join(projectRoot, 'assests'))); // استخدمت الاسم كما هو في GitHub
 
-// Redirect root to index.html
+// 3. مسار الصفحة الرئيسية (Redirect root to index.html)
 app.get('/', (req, res) => {
-  res.redirect('/Pages/index.html');
+  res.sendFile(path.join(projectRoot, 'Pages', 'index.html'));
 });
-
 
 
 // Test route
