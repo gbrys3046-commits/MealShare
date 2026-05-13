@@ -2,7 +2,7 @@
 (function () {
   "use strict";
 
-  const API_BASE = `http://${window.location.hostname}:3000/api`;
+  const API_BASE = `https://mealshare.onrender.com`;
 
   const log = (...a) => console.log("[MS]", ...a);
 
@@ -72,7 +72,7 @@
   // Logout Handler
   async function handleLogout() {
     try {
-      await fetch(`${API_BASE}/auth/logout`, {
+      await fetch(`/auth/logout`, {
         method: 'POST',
         credentials: 'include'
       });

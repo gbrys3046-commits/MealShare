@@ -1,7 +1,7 @@
 
 
 
-const API_BASE = `http://${window.location.hostname}:3000/api`;
+const API_BASE = `https://mealshare.onrender.com`;
 
 let isRedirecting = false;
 
@@ -215,11 +215,11 @@ async function checkExistingSession() {
   }
 
   try {
-    const res = await fetch(`${API_BASE}/auth/me`, {
+    const res = await fetch(`/auth/me`, {
       method: 'GET',
       credentials: 'include' // ⚠️ CRITICAL: Send cookies
     });
-    
+
     if (res.ok) {
       const data = await res.json();
       if (data.authenticated && data.user) {
@@ -239,7 +239,7 @@ async function checkExistingSession() {
 function redirectToDashboard(role) {
   console.log("🚀 Redirecting to dashboard for role:", role);
   isRedirecting = true;
-  
+
   if (role === "admin") {
     window.location.replace("dashboard-admin.html");
   } else if (role === "charity") {
@@ -266,7 +266,7 @@ function showPlatformInfoModal() {
   // Create overlay
   const overlay = document.createElement('div');
   overlay.className = 'platform-info-modal-overlay';
-  
+
   overlay.innerHTML = `
     <div class="platform-info-modal">
       <button class="platform-modal-close" title="إغلاق">×</button>
@@ -890,7 +890,7 @@ function setupAuth() {
       const loginDiv = ctx?.querySelector("#login");
       const registerDiv = ctx?.querySelector("#register");
       const resetDiv = ctx?.querySelector("#reset-password");
-      
+
       // Hide password reset section when switching between tabs
       if (resetDiv) {
         resetDiv.classList.add("hidden");
@@ -900,11 +900,11 @@ function setupAuth() {
         if (step1) step1.classList.remove("hidden");
         if (step2) step2.classList.add("hidden");
       }
-      
+
       // Show tabs if they were hidden
       const tabs = ctx?.querySelector(".tabs");
       if (tabs) tabs.classList.remove("hidden");
-      
+
       loginDiv && loginDiv.classList.toggle("hidden", tabName !== "login");
       registerDiv && registerDiv.classList.toggle("hidden", tabName !== "register");
       return;
@@ -928,7 +928,7 @@ function setupAuth() {
     //  LOGIN 
     if (form.matches && form.matches("#form-login")) {
       e.preventDefault();
-      
+
       const emailInput = form.querySelector("#email");
       const passwordInput = form.querySelector("#pwd");
       const email = (emailInput?.value || "").trim();
@@ -940,15 +940,15 @@ function setupAuth() {
         const fieldContainer = input.closest('.field') || input.parentElement;
         const existingError = fieldContainer.querySelector('.field-error-msg');
         if (existingError) existingError.remove();
-        
+
         input.style.border = '2px solid #ef4444';
-        
+
         const errorDiv = document.createElement('div');
         errorDiv.className = 'field-error-msg';
         errorDiv.style.cssText = 'color: #ef4444; font-size: 13px; margin-top: 6px; text-align: right;';
         errorDiv.textContent = message;
         fieldContainer.appendChild(errorDiv);
-        
+
         input.addEventListener('input', function resetError() {
           input.style.border = '';
           const errMsg = fieldContainer.querySelector('.field-error-msg');
@@ -1000,7 +1000,7 @@ function setupAuth() {
       }
 
       try {
-        const res = await fetch(`${API_BASE}/auth/login`, {
+        const res = await fetch(`/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include', // ⚠️ CRITICAL: Accept cookies from server
@@ -1043,43 +1043,43 @@ function setupAuth() {
     // REGISTER
     if (form.matches && form.matches("#form-register")) {
       e.preventDefault();
-      
+
       const step1 = form.querySelector("#register-step-1");
       const step2 = form.querySelector("#register-step-2");
-      
+
       // Check if we're in OTP verification step
       if (step2 && !step2.classList.contains("hidden")) {
         // OTP Verification Step
         const otp = (form.querySelector("#r-otp")?.value || "").trim();
         const email = window._pendingRegistration?.email;
-        
+
         if (!otp) {
           showToast("أدخل رمز التحقق", "warn");
           return;
         }
-        
+
         if (!email) {
           showToast("حدث خطأ، أعد المحاولة", "danger");
           return;
         }
-        
+
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
           submitBtn.disabled = true;
           submitBtn.textContent = 'جاري التحقق...';
         }
-        
+
         try {
           // Verify OTP
-          const verifyRes = await fetch(`${API_BASE}/otp/verify`, {
+          const verifyRes = await fetch(`/otp/verify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
             body: JSON.stringify({ email, otp, purpose: "signup" })
           });
-          
+
           const verifyData = await verifyRes.json();
-          
+
           if (!verifyRes.ok) {
             showToast(verifyData.message || "رمز التحقق غير صحيح", "danger");
             if (submitBtn) {
@@ -1088,18 +1088,18 @@ function setupAuth() {
             }
             return;
           }
-          
+
           // OTP verified - now register the user
           const regData = window._pendingRegistration;
-          const regRes = await fetch(`${API_BASE}/auth/register`, {
+          const regRes = await fetch(`/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
             body: JSON.stringify(regData)
           });
-          
+
           const regResult = await regRes.json();
-          
+
           if (!regRes.ok) {
             showToast(regResult.error || "فشل إنشاء الحساب", "danger");
             if (submitBtn) {
@@ -1108,17 +1108,17 @@ function setupAuth() {
             }
             return;
           }
-          
+
           // Auto-login after registration
-          const loginRes = await fetch(`${API_BASE}/auth/login`, {
+          const loginRes = await fetch(`/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
             body: JSON.stringify({ email: regData.email, password: regData.password })
           });
-          
+
           const userData = await loginRes.json();
-          
+
           if (loginRes.ok) {
             // Show success notification - redirect when closed (user clicks OK or auto-close after 5 sec)
             showToast(" تم إنشاء حساب المؤسسة الغذائية بنجاح   ", "success", () => {
@@ -1129,7 +1129,7 @@ function setupAuth() {
             showToast("تم إنشاء الحساب، الرجاء تسجيل الدخول", "success");
             window._pendingRegistration = null;
           }
-          
+
         } catch (err) {
           console.error("Registration OTP error:", err);
           showToast("خطأ في الاتصال بالسيرفر", "danger");
@@ -1140,7 +1140,7 @@ function setupAuth() {
         }
         return;
       }
-      
+
       // Step 1 - Collect data and send OTP
       const nameInput = form.querySelector("#rname");
       const emailInput = form.querySelector("#remail");
@@ -1167,26 +1167,26 @@ function setupAuth() {
       // Function to show field error with red border
       function showFieldError(input, message) {
         if (!input) return;
-        
+
         // Find closest .field div or fallback to parentElement
         const fieldContainer = input.closest('.field') || input.parentElement;
-        
+
         // Remove any existing error message
         const existingError = fieldContainer.querySelector('.field-error-msg');
         if (existingError) existingError.remove();
-        
+
         // Add red border to indicate error
         input.style.borderColor = '#ef4444';
         input.style.border = '2px solid #ef4444';
         input.style.boxShadow = 'none';
-        
+
         // Create error message element below the field
         const errorDiv = document.createElement('div');
         errorDiv.className = 'field-error-msg';
         errorDiv.style.cssText = 'color: #ef4444; font-size: 13px; margin-top: 6px; text-align: right;';
         errorDiv.textContent = message;
         fieldContainer.appendChild(errorDiv);
-        
+
         // Remove error styling when user starts typing
         input.addEventListener('input', function resetError() {
           input.style.borderColor = '';
@@ -1298,24 +1298,24 @@ function setupAuth() {
         name, email, password: pass, role,
         phone, address, description: desc, lat, lng
       };
-      
+
       const continueBtn = form.querySelector("#btn-register-continue");
       if (continueBtn) {
         continueBtn.disabled = true;
         continueBtn.textContent = 'جاري إرسال رمز التحقق...';
       }
-      
+
       try {
         // Check if email is already taken
-        const checkEmailRes = await fetch(`${API_BASE}/auth/check-email-available`, {
+        const checkEmailRes = await fetch(`/auth/check-email-available`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
           body: JSON.stringify({ email })
         });
-        
+
         const checkEmailData = await checkEmailRes.json();
-        
+
         if (!checkEmailRes.ok || !checkEmailData.available) {
           showFieldError(emailInput, 'هذا البريد الإلكتروني مسجل بالفعل');
           if (continueBtn) {
@@ -1324,17 +1324,17 @@ function setupAuth() {
           }
           return;
         }
-        
+
         // Check if phone number is already taken
-        const checkPhoneRes = await fetch(`${API_BASE}/auth/check-phone-available`, {
+        const checkPhoneRes = await fetch(`/auth/check-phone-available`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
           body: JSON.stringify({ phone })
         });
-        
+
         const checkPhoneData = await checkPhoneRes.json();
-        
+
         if (!checkPhoneRes.ok || !checkPhoneData.available) {
           showFieldError(phoneInput, 'رقم الهاتف مستخدم بالفعل');
           if (continueBtn) {
@@ -1343,17 +1343,17 @@ function setupAuth() {
           }
           return;
         }
-        
+
         // Send OTP
-        const otpRes = await fetch(`${API_BASE}/otp/send`, {
+        const otpRes = await fetch(`/otp/send`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
           body: JSON.stringify({ email, purpose: "signup" })
         });
-        
+
         const otpData = await otpRes.json();
-        
+
         if (!otpRes.ok) {
           showToast(otpData.message || "فشل إرسال رمز التحقق", "danger");
           if (continueBtn) {
@@ -1362,24 +1362,24 @@ function setupAuth() {
           }
           return;
         }
-        
+
         showToast("تم إرسال رمز التحقق إلى بريدك الإلكتروني", "success");
-        
+
         // Show OTP step
         if (step1) step1.classList.add("hidden");
         if (step2) step2.classList.remove("hidden");
-        
+
         // Update note
         const note = form.querySelector(".register-otp-note");
         if (note) {
           note.innerHTML = `تم إرسال رمز التحقق إلى: <strong>${email}</strong><br>الرمز صالح لمدة 5 دقائق`;
         }
-        
+
         if (continueBtn) {
           continueBtn.disabled = false;
           continueBtn.textContent = 'إنشاء حساب';
         }
-        
+
       } catch (err) {
         console.error("Send OTP error:", err);
         showToast("خطأ في الاتصال بالسيرفر", "danger");
@@ -1394,44 +1394,44 @@ function setupAuth() {
     // RESET PASSWORD
     if (form.matches && form.matches("#form-reset")) {
       e.preventDefault();
-      
+
       const step1 = form.querySelector("#reset-step-1");
       const step2 = form.querySelector("#reset-step-2");
-      
+
       // Check if we're in OTP verification step (step 2)
       if (step2 && !step2.classList.contains("hidden")) {
         // Verify OTP and reset password
         const otp = (form.querySelector("#reset-token")?.value || "").trim();
         const newPass = (form.querySelector("#reset-newpass")?.value || "").trim();
         const email = window._resetEmail;
-        
+
         if (!otp) {
           showToast("أدخل رمز التحقق", "warn");
           return;
         }
-        
+
         if (!newPass || newPass.length < 6) {
           showToast("كلمة المرور يجب أن تكون 6 أحرف أو أكثر", "warn");
           return;
         }
-        
+
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
           submitBtn.disabled = true;
           submitBtn.textContent = 'جاري التحقق...';
         }
-        
+
         try {
           // Verify OTP first
-          const verifyRes = await fetch(`${API_BASE}/otp/verify`, {
+          const verifyRes = await fetch(`/otp/verify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
             body: JSON.stringify({ email, otp, purpose: "reset" })
           });
-          
+
           const verifyData = await verifyRes.json();
-          
+
           if (!verifyRes.ok) {
             showToast(verifyData.message || "رمز التحقق غير صحيح", "danger");
             if (submitBtn) {
@@ -1440,17 +1440,17 @@ function setupAuth() {
             }
             return;
           }
-          
+
           // OTP verified - now reset password
-          const resetRes = await fetch(`${API_BASE}/auth/reset-password`, {
+          const resetRes = await fetch(`/auth/reset-password`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
             body: JSON.stringify({ email, newPassword: newPass })
           });
-          
+
           const resetData = await resetRes.json();
-          
+
           if (!resetRes.ok) {
             showToast(resetData.error || "فشل تغيير كلمة المرور", "danger");
             if (submitBtn) {
@@ -1459,10 +1459,10 @@ function setupAuth() {
             }
             return;
           }
-          
+
           showToast("تم تغيير كلمة المرور بنجاح!", "success");
           window._resetEmail = null;
-          
+
           // Go back to login
           setTimeout(() => {
             const panel = document.getElementById("auth-panel");
@@ -1478,7 +1478,7 @@ function setupAuth() {
             const tabs = document.querySelector('.tabs');
             if (tabs) tabs.classList.remove('hidden');
           }, 1500);
-          
+
         } catch (err) {
           console.error("Reset password error:", err);
           showToast("خطأ في الاتصال بالسيرفر", "danger");
@@ -1489,84 +1489,84 @@ function setupAuth() {
         }
         return;
       }
-      
+
       // Default - should not reach here as step 1 uses a button click
       showToast("اضغط على زر استمرار", "info");
       return;
     }
   });
-  
+
   // Reset Password - Continue Button
   const btnResetContinue = document.querySelector("#btn-reset-continue");
   if (btnResetContinue) {
     btnResetContinue.addEventListener("click", async (e) => {
       e.preventDefault();
-      
+
       const email = (document.querySelector("#reset-email")?.value || "").trim();
-      
+
       if (!email || !isEmail(email)) {
         showToast("أدخل بريدًا إلكترونيًا صحيحًا", "warn");
         return;
       }
-      
+
       btnResetContinue.disabled = true;
       btnResetContinue.textContent = 'جاري التحقق...';
-      
+
       try {
         // Check if email exists
-        const checkRes = await fetch(`${API_BASE}/auth/check-email`, {
+        const checkRes = await fetch(`/auth/check-email`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
           body: JSON.stringify({ email })
         });
-        
+
         const checkData = await checkRes.json();
-        
+
         if (!checkRes.ok) {
           showToast(checkData.error || "البريد الإلكتروني غير مسجل", "danger");
           btnResetContinue.disabled = false;
           btnResetContinue.textContent = 'استمرار';
           return;
         }
-        
+
         // Email exists - send OTP
-        const otpRes = await fetch(`${API_BASE}/otp/send`, {
+        const otpRes = await fetch(`/otp/send`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
           body: JSON.stringify({ email, purpose: "reset" })
         });
-        
+
         const otpData = await otpRes.json();
-        
+
         if (!otpRes.ok) {
           showToast(otpData.message || "فشل إرسال رمز التحقق", "danger");
           btnResetContinue.disabled = false;
           btnResetContinue.textContent = 'استمرار';
           return;
         }
-        
+
         showToast("تم إرسال رمز التحقق إلى بريدك الإلكتروني", "success");
-        
+
         // Store email for later use
         window._resetEmail = email;
-        
+
         // Show step 2
         const step1 = document.querySelector("#reset-step-1");
         const step2 = document.querySelector("#reset-step-2");
         if (step1) step1.classList.add("hidden");
         if (step2) step2.classList.remove("hidden");
-        
+
         // Update note
         const note = document.querySelector(".reset-note");
         if (note) {
           note.innerHTML = `تم إرسال رمز التحقق إلى: <strong>${email}</strong><br>الرمز صالح لمدة 5 دقائق`;
         }
-        
+
         btnResetContinue.disabled = false;
         btnResetContinue.textContent = 'استمرار';
-        
+
       } catch (err) {
         console.error("Check email error:", err);
         showToast("خطأ في الاتصال بالسيرفر", "danger");
@@ -1575,7 +1575,7 @@ function setupAuth() {
       }
     });
   }
-  
+
   // Register Back Button
   const btnRegisterBack = document.querySelector("#btn-register-back");
   if (btnRegisterBack) {
@@ -1601,7 +1601,7 @@ function initRegistrationMap() {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(instutMap);
 
-    instutMap.on('click', function(e) {
+    instutMap.on('click', function (e) {
       const { lat, lng } = e.latlng;
       const latInput = document.getElementById('lat');
       const lngInput = document.getElementById('lng');
@@ -1630,7 +1630,7 @@ function passToggle(passInput, pass2Input, pass3Input, pass4Input) {
     { btnId: "#toggle-pass3", openId: "#eye-open3", closedId: "#eye-closed3", input: pass3Input },
     { btnId: "#toggle-pass4", openId: "#eye-open4", closedId: "#eye-closed4", input: pass4Input },
   ];
-  
+
   map.forEach(({ btnId, openId, closedId, input }) => {
     const toggleBtn = document.querySelector(btnId);
     const eyeOpen = document.querySelector(openId);

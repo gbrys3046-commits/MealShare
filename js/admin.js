@@ -1,5 +1,5 @@
 
-const API_BASE = `http://${window.location.hostname}:3000/api`;
+const API_BASE = `https://mealshare.onrender.com`;
 
 let currentUser = null;
 
@@ -8,7 +8,7 @@ const MAX_AUTH_ATTEMPTS = 2;
 
 async function checkAuth() {
   authCheckAttempts++;
-  
+
   // Prevent infinite redirect loops
   if (authCheckAttempts > MAX_AUTH_ATTEMPTS) {
     console.log("⚠️ Max auth attempts reached, staying on page");
@@ -17,8 +17,8 @@ async function checkAuth() {
 
   try {
     console.log("🔍 Checking authentication... (Attempt", authCheckAttempts + ")");
-    
-    const res = await fetch(`${API_BASE}/auth/me`, {
+
+    const res = await fetch(`/auth/me`, {
       method: 'GET',
       credentials: 'include' // ⚠️ CRITICAL: Send cookies
     });
@@ -30,7 +30,7 @@ async function checkAuth() {
     }
 
     const data = await res.json();
-    
+
     if (!data.authenticated || !data.user) {
       console.log("❌ Session invalid");
       window.location.replace("index.html?nocheck=1");
@@ -58,7 +58,7 @@ async function checkAuth() {
 // Logout Handler
 async function handleLogout() {
   try {
-    await fetch(`${API_BASE}/auth/logout`, {
+    await fetch(`/auth/logout`, {
       method: 'POST',
       credentials: 'include'
     });
@@ -654,7 +654,7 @@ function showPrompt(message, onSubmit, onCancel = null, placeholder = '') {
   };
 
   document.body.appendChild(overlay);
-  
+
   // Focus on input
   setTimeout(() => inputEl.focus(), 100);
 }
@@ -666,7 +666,7 @@ function isEmail(email) {
 // API Functions
 async function fetchUsers() {
   try {
-    const res = await fetch(`${API_BASE}/users`, {
+    const res = await fetch(`/users`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch users');
@@ -679,7 +679,7 @@ async function fetchUsers() {
 
 async function fetchRequests() {
   try {
-    const res = await fetch(`${API_BASE}/requests`, {
+    const res = await fetch(`/requests`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch requests');
@@ -692,7 +692,7 @@ async function fetchRequests() {
 
 async function fetchSurpluses() {
   try {
-    const res = await fetch(`${API_BASE}/surpluses`, {
+    const res = await fetch(`/surpluses`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch surpluses');
@@ -705,7 +705,7 @@ async function fetchSurpluses() {
 
 async function deleteUser(id) {
   try {
-    const res = await fetch(`${API_BASE}/users/${encodeURIComponent(id)}`, {
+    const res = await fetch(`/users/${encodeURIComponent(id)}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -721,7 +721,7 @@ async function deleteUser(id) {
 
 async function toggleUserStatus(id, isActive) {
   try {
-    const res = await fetch(`${API_BASE}/users/${encodeURIComponent(id)}/status`, {
+    const res = await fetch(`/users/${encodeURIComponent(id)}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -738,7 +738,7 @@ async function toggleUserStatus(id, isActive) {
 
 async function createCharity(charityData) {
   try {
-    const res = await fetch(`${API_BASE}/auth/register`, {
+    const res = await fetch(`/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
@@ -758,7 +758,7 @@ let cachedNotifications = [];
 
 async function fetchAdminNotifications() {
   try {
-    const res = await fetch(`${API_BASE}/notifications/admin`, {
+    const res = await fetch(`/notifications/admin`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch notifications');
@@ -771,7 +771,7 @@ async function fetchAdminNotifications() {
 
 async function markNotificationAsRead(id) {
   try {
-    const res = await fetch(`${API_BASE}/notifications/${id}/read`, {
+    const res = await fetch(`/notifications/${id}/read`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -787,7 +787,7 @@ async function markNotificationAsRead(id) {
 
 async function deleteNotification(id) {
   try {
-    const res = await fetch(`${API_BASE}/notifications/${id}`, {
+    const res = await fetch(`/notifications/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     });
@@ -802,7 +802,7 @@ async function deleteNotification(id) {
 
 async function deleteAllNotifications() {
   try {
-    const res = await fetch(`${API_BASE}/notifications/delete-all`, {
+    const res = await fetch(`/notifications/delete-all`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -826,7 +826,7 @@ function renderNotifications() {
 
   // Count unread notifications
   const unreadCount = cachedNotifications.filter(n => !n.is_read).length;
-  
+
   // Update notification badge if exists
   const badge = document.getElementById('notification-badge');
   if (badge) {
@@ -863,12 +863,12 @@ function renderNotifications() {
           <p>لا توجد إشعارات</p>
         </div>
       ` : cachedNotifications.map(notification => {
-        const isRead = notification.is_read === 1 || notification.is_read === true;
-        const createdAt = notification.created_at ? new Date(notification.created_at).toLocaleString('ar-LY') : '-';
-        const typeIcon = getNotificationIcon(notification.type);
-        const typeColor = getNotificationColor(notification.type);
-        
-        return `
+    const isRead = notification.is_read === 1 || notification.is_read === true;
+    const createdAt = notification.created_at ? new Date(notification.created_at).toLocaleString('ar-LY') : '-';
+    const typeIcon = getNotificationIcon(notification.type);
+    const typeColor = getNotificationColor(notification.type);
+
+    return `
           <div class="notification-item ${isRead ? 'read' : 'unread'}" 
                data-id="${notification.id}"
                style="
@@ -926,7 +926,7 @@ function renderNotifications() {
             </div>
           </div>
         `;
-      }).join('')}
+  }).join('')}
     </div>
   `;
 }
@@ -980,7 +980,7 @@ async function renderAdmin() {
   const statSurpluses = document.getElementById('stat-surpluses-count');
   const statRestaurants = document.getElementById('stat-restaurants-count');
   const statCharities = document.getElementById('stat-charities-count');
-  
+
   if (statUsers) statUsers.textContent = nonAdminUsers.length;
   if (statRequests) statRequests.textContent = cachedRequests.length;
   if (statSurpluses) statSurpluses.textContent = cachedSurpluses.length;
@@ -1006,38 +1006,38 @@ async function renderAdmin() {
 // Admin Charts Update Functions
 function updateAdminUsersChart(restaurantsCount, charitiesCount, totalUsers) {
   const circumference = 2 * Math.PI * 40; // 251.2
-  
+
   const segmentRestaurants = document.getElementById("segment-restaurants");
   const segmentCharities = document.getElementById("segment-charities");
   const totalUsersEl = document.getElementById("total-users");
   const legendRestaurants = document.getElementById("legend-restaurants");
   const legendCharities = document.getElementById("legend-charities");
-  
+
   // Update legend
   if (legendRestaurants) legendRestaurants.textContent = restaurantsCount;
   if (legendCharities) legendCharities.textContent = charitiesCount;
   if (totalUsersEl) totalUsersEl.textContent = totalUsers;
-  
+
   if (!segmentRestaurants || !segmentCharities) return;
-  
+
   if (totalUsers === 0) {
     segmentRestaurants.style.strokeDasharray = `0 ${circumference}`;
     segmentCharities.style.strokeDasharray = `0 ${circumference}`;
     return;
   }
-  
+
   // Calculate percentages
   const restaurantsPct = (restaurantsCount / totalUsers) * 100;
   const charitiesPct = (charitiesCount / totalUsers) * 100;
-  
+
   // Calculate stroke-dasharray values
   const restaurantsDash = (restaurantsPct / 100) * circumference;
   const charitiesDash = (charitiesPct / 100) * circumference;
-  
+
   // Restaurants starts at 0
   segmentRestaurants.style.strokeDasharray = `${restaurantsDash} ${circumference}`;
   segmentRestaurants.style.strokeDashoffset = '0';
-  
+
   // Charities starts after restaurants
   segmentCharities.style.strokeDasharray = `${charitiesDash} ${circumference}`;
   segmentCharities.style.strokeDashoffset = `-${restaurantsDash}`;
@@ -1047,12 +1047,12 @@ function updateAdminProgressBars(requests, surpluses, activeUsersCount, totalUse
   // Accepted requests rate
   const acceptedRequests = requests.filter(r => r.status === 'accepted').length;
   const acceptanceRate = requests.length > 0 ? Math.round((acceptedRequests / requests.length) * 100) : 0;
-  
+
   const acceptedRateEl = document.getElementById("admin-accepted-rate");
   const acceptedBar = document.getElementById("admin-accepted-bar");
 
-   
-  
+
+
   if (acceptedRateEl) acceptedRateEl.textContent = `${acceptanceRate}%`;
   if (acceptedBar) acceptedBar.style.width = `${acceptanceRate}%`;
 
@@ -1061,26 +1061,26 @@ function updateAdminProgressBars(requests, surpluses, activeUsersCount, totalUse
 
   const rejectedRequests = requests.filter(r => r.status === 'rejected').length;
   const rejectionRate = requests.length > 0 ? Math.round((rejectedRequests / requests.length) * 100) : 0;
-  
+
   if (rejectedRateEl) rejectedRateEl.textContent = `${rejectionRate}%`;
   if (rejectedBar) rejectedBar.style.width = `${rejectionRate}%`;
-  
+
   // Active surpluses
   const activeSurpluses = surpluses.filter(s => s.status === 'active').length;
   const surplusesPct = surpluses.length > 0 ? Math.round((activeSurpluses / surpluses.length) * 100) : 0;
-  
+
   const activeSurplusesEl = document.getElementById("admin-active-surpluses");
   const surplusesBar = document.getElementById("admin-surpluses-bar");
-  
+
   if (activeSurplusesEl) activeSurplusesEl.textContent = activeSurpluses;
   if (surplusesBar) surplusesBar.style.width = `${surplusesPct}%`;
-  
+
   // Active users
   const activeUsersPct = totalUsers > 0 ? Math.round((activeUsersCount / totalUsers) * 100) : 0;
-  
+
   const activeUsersEl = document.getElementById("admin-active-users");
   const activeBar = document.getElementById("admin-active-bar");
-  
+
   if (activeUsersEl) activeUsersEl.textContent = `${activeUsersCount} (${activeUsersPct}%)`;
   if (activeBar) activeBar.style.width = `${activeUsersPct}%`;
 }
@@ -1096,14 +1096,14 @@ function renderEventsTable() {
 
   // Build events array
   const events = [];
-  
+
   cachedRequests.forEach(r => {
     events.push({
       type: 'request',
       time: r.created_at || r.time,
       id: r.id,
       payload: r
-      
+
     });
   });
 
@@ -1142,11 +1142,11 @@ function renderEventsTable() {
 
       const typeLabel =
         ev.type === 'request' ? 'طلب' :
-        ev.type === 'warning' ? 'رسالة' : 'فائض';
+          ev.type === 'warning' ? 'رسالة' : 'فائض';
 
       const content =
         ev.type === 'request' ? escapeHtml(ev.payload.title || ev.payload.surplus_title || '-') :
-        ev.type === 'warning' ? escapeHtml(ev.payload.message) : escapeHtml(ev.payload.title);
+          ev.type === 'warning' ? escapeHtml(ev.payload.message) : escapeHtml(ev.payload.title);
 
       tr.innerHTML = `
         <td>${typeLabel}</td>
@@ -1189,7 +1189,7 @@ function renderDashboardUsersTable() {
         const statusColor = isActive ? '#00c4a7' : '#ef4444';
         const toggleBtnText = isActive ? 'تعطيل' : 'تفعيل';
         const toggleBtnColor = isActive ? '#f59e0b' : '#22c55e';
-        
+
         tr.innerHTML = `
           <td>${escapeHtml(u.name)}</td>
           <td>${escapeHtml(u.role)}</td>
@@ -1208,7 +1208,7 @@ function renderDashboardUsersTable() {
 
 // Event Listeners
 document.getElementById("filter-type")?.addEventListener("change", renderEventsTable);
-document.getElementById("filter-date")?.addEventListener("change", function() {
+document.getElementById("filter-date")?.addEventListener("change", function () {
   const wrapper = document.getElementById("date-filter-wrapper");
   if (wrapper) {
     if (this.value) {
@@ -1221,7 +1221,7 @@ document.getElementById("filter-date")?.addEventListener("change", function() {
 });
 
 // Clear date button handler
-document.getElementById("clear-date-btn")?.addEventListener("click", function() {
+document.getElementById("clear-date-btn")?.addEventListener("click", function () {
   const dateInput = document.getElementById("filter-date");
   const wrapper = document.getElementById("date-filter-wrapper");
   if (dateInput) {
@@ -1238,7 +1238,7 @@ document.getElementById("dashboard-user-search-input")?.addEventListener("input"
 document.addEventListener("DOMContentLoaded", async () => {
   // ⚠️ CRITICAL: Check authentication first
   currentUser = await checkAuth();
-  
+
   if (!currentUser) {
     // checkAuth already redirects
     return;
@@ -1253,7 +1253,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Initialize map for creating charity
   initCharityForm();
-  
+
   // Initialize password toggle
   initPasswordToggle();
 });
@@ -1273,7 +1273,7 @@ function initCharityForm() {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(adminMap);
 
-    adminMap.on('click', function(e) {
+    adminMap.on('click', function (e) {
       const { lat, lng } = e.latlng;
       document.getElementById('lat').value = lat.toFixed(6);
       document.getElementById('lng').value = lng.toFixed(6);
@@ -1292,7 +1292,7 @@ function initCharityForm() {
     ro.observe(mapContainer);
   }
 
-  form.addEventListener('submit', async function(e) {
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const nameInput = document.getElementById('admin-charity-name');
@@ -1318,26 +1318,26 @@ function initCharityForm() {
     // Function to show field error with red border
     function showFieldError(input, message) {
       if (!input) return;
-      
+
       // Find closest .field div or fallback to parentElement
       const fieldContainer = input.closest('.field') || input.parentElement;
-      
+
       // Remove any existing error message
       const existingError = fieldContainer.querySelector('.field-error-msg');
       if (existingError) existingError.remove();
-      
+
       // Add red border to indicate error
       input.style.borderColor = '#ef4444';
       input.style.border = '2px solid #ef4444';
       input.style.boxShadow = 'none';
-      
+
       // Create error message element below the field
       const errorDiv = document.createElement('div');
       errorDiv.className = 'field-error-msg';
       errorDiv.style.cssText = 'color: #ef4444; font-size: 13px; margin-top: 6px; text-align: right;';
       errorDiv.textContent = message;
       fieldContainer.appendChild(errorDiv);
-      
+
       // Remove error styling when user starts typing
       input.addEventListener('input', function resetError() {
         input.style.borderColor = '';
@@ -1479,18 +1479,18 @@ function initCharityForm() {
       submitBtn.disabled = true;
       submitBtn.innerHTML = 'جارٍ الإنشاء...';
     }
-    
+
     // Check if email is already taken
     try {
-      const checkEmailRes = await fetch(`${API_BASE}/auth/check-email-available`, {
+      const checkEmailRes = await fetch(`/auth/check-email-available`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
         body: JSON.stringify({ email })
       });
-      
+
       const checkEmailData = await checkEmailRes.json();
-      
+
       if (!checkEmailRes.ok || !checkEmailData.available) {
         showFieldError(emailInput, 'هذا البريد الإلكتروني مسجل بالفعل');
         if (submitBtn) {
@@ -1508,18 +1508,18 @@ function initCharityForm() {
       }
       return;
     }
-    
+
     // Check if phone number is already taken
     try {
-      const checkPhoneRes = await fetch(`${API_BASE}/auth/check-phone-available`, {
+      const checkPhoneRes = await fetch(`/auth/check-phone-available`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
         body: JSON.stringify({ phone })
       });
-      
+
       const checkPhoneData = await checkPhoneRes.json();
-      
+
       if (!checkPhoneRes.ok || !checkPhoneData.available) {
         showFieldError(phoneInput, 'رقم الهاتف مستخدم بالفعل');
         if (submitBtn) {
@@ -1568,7 +1568,7 @@ function initCharityForm() {
     } else {
       // Show specific error from API
       let errorMsg = result.error || 'فشل إنشاء الحساب';
-      
+
       // Handle common API errors
       if (errorMsg.toLowerCase().includes('email') || errorMsg.toLowerCase().includes('exists') || errorMsg.toLowerCase().includes('duplicate')) {
         highlightError(emailInput, 'هذا البريد الإلكتروني مُسجل مسبقاً');
@@ -1580,7 +1580,7 @@ function initCharityForm() {
 }
 
 // Click Event Handlers
-document.addEventListener('click', async function(e) {
+document.addEventListener('click', async function (e) {
   // Mark Notification as Read Button
   const markReadBtn = e.target.closest('.btn-mark-read');
   if (markReadBtn) {
@@ -1608,7 +1608,7 @@ document.addEventListener('click', async function(e) {
   const deleteNotifBtn = e.target.closest('.btn-delete-notification');
   if (deleteNotifBtn) {
     const id = deleteNotifBtn.dataset.id;
-    
+
     showConfirm('هل تريد حذف هذا الإشعار؟', async () => {
       deleteNotifBtn.disabled = true;
       deleteNotifBtn.innerText = 'جارٍ...';
@@ -1680,7 +1680,7 @@ document.addEventListener('click', async function(e) {
   const warnBtn = e.target.closest('.btn-warn');
   if (warnBtn) {
     const email = warnBtn.dataset.email;
-    
+
     showPrompt(`نص الرسالة التي تريد إرسالها إلى: ${email}`, async (msg) => {
       if (!msg) {
         showToast('الرسالة فارغة', 'warn');
@@ -1692,7 +1692,7 @@ document.addEventListener('click', async function(e) {
       warnBtn.innerText = 'جارٍ الإرسال...';
 
       try {
-        const res = await fetch(`${API_BASE}/notifications`, {
+        const res = await fetch(`/notifications`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -1826,11 +1826,11 @@ function openAdminModal(title, bodyText) {
     </div>
   `;
   document.body.appendChild(modal);
-  
-  modal.addEventListener('click', function(e) {
+
+  modal.addEventListener('click', function (e) {
     if (e.target === modal) modal.remove();
   });
-  
+
   const closeBtn = modal.querySelector('#close-admin-modal');
   if (closeBtn) closeBtn.addEventListener('click', () => modal.remove());
 }

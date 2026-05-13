@@ -1,6 +1,6 @@
 
 
-const API_BASE = `http://${window.location.hostname}:3000/api`;
+const API_BASE = `https://mealshare.onrender.com`;
 
 // Current User (from server session)
 let currentUser = null;
@@ -269,27 +269,27 @@ function showConfirm(message, onConfirm, onCancel = null) {
   `;
 
   overlay.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:99999;animation:modalFadeIn 0.25s ease;`;
-  
+
   const card = overlay.querySelector('.confirm-modal-card');
   card.style.cssText = `position:relative;background:#fff;border-radius:12px;padding:30px 40px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.15);max-width:400px;min-width:320px;animation:modalSlideUp 0.3s ease;`;
-  
+
   const closeX = overlay.querySelector('.confirm-close-x');
   closeX.style.cssText = `position:absolute;top:10px;right:12px;background:none;border:none;font-size:24px;color:#9ca3af;cursor:pointer;line-height:1;`;
   closeX.onclick = () => { overlay.remove(); if (onCancel) onCancel(); };
-  
+
   const iconWrapper = overlay.querySelector('.confirm-icon-wrapper');
   iconWrapper.style.cssText = `width:70px;height:70px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,0.1);border-radius:50%;`;
-  
+
   const msgEl = overlay.querySelector('.confirm-message');
   msgEl.style.cssText = `margin:0 0 25px 0;font-size:16px;color:#374151;line-height:1.6;font-weight:500;`;
-  
+
   const btnsContainer = overlay.querySelector('.confirm-buttons');
   btnsContainer.style.cssText = `display:flex;gap:12px;justify-content:center;`;
-  
+
   const okBtn = overlay.querySelector('.confirm-btn-ok');
   okBtn.style.cssText = `background:#00c4a7;color:#fff;border:none;padding:12px 35px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;`;
   okBtn.onclick = () => { overlay.remove(); if (onConfirm) onConfirm(); };
-  
+
   const cancelBtn = overlay.querySelector('.confirm-btn-cancel');
   cancelBtn.style.cssText = `background:#ef4444;color:#fff;border:none;padding:12px 35px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;`;
   cancelBtn.onclick = () => { overlay.remove(); if (onCancel) onCancel(); };
@@ -466,7 +466,7 @@ const MAX_AUTH_ATTEMPTS = 2;
 
 async function checkAuth() {
   authCheckAttempts++;
-  
+
   // Prevent infinite redirect loops
   if (authCheckAttempts > MAX_AUTH_ATTEMPTS) {
     console.log("⚠️ Max auth attempts reached, staying on page");
@@ -475,8 +475,8 @@ async function checkAuth() {
 
   try {
     console.log("🔍 Checking authentication... (Attempt", authCheckAttempts + ")");
-    
-    const res = await fetch(`${API_BASE}/auth/me`, {
+
+    const res = await fetch(`/auth/me`, {
       method: 'GET',
       credentials: 'include' // ⚠️ CRITICAL: Send cookies
     });
@@ -489,7 +489,7 @@ async function checkAuth() {
     }
 
     const data = await res.json();
-    
+
     if (!data.authenticated || !data.user) {
       console.log("❌ Session invalid");
       window.location.replace("index.html?nocheck=1");
@@ -511,7 +511,7 @@ async function checkAuth() {
 // Logout Handler
 async function handleLogout() {
   try {
-    await fetch(`${API_BASE}/auth/logout`, {
+    await fetch(`/auth/logout`, {
       method: 'POST',
       credentials: 'include'
     });
@@ -532,7 +532,7 @@ document.addEventListener("click", (e) => {
 // Fetch Surpluses
 async function fetchSurplusesFromServer() {
   try {
-    const res = await fetch(`${API_BASE}/surpluses`, {
+    const res = await fetch(`/surpluses`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error("Failed to fetch surpluses");
@@ -550,7 +550,7 @@ async function fetchNotifications() {
   try {
     // Fetch user notifications by email instead of role
     if (!currentUser?.email) return [];
-    const res = await fetch(`${API_BASE}/notifications/email/${encodeURIComponent(currentUser.email)}`, {
+    const res = await fetch(`/notifications/email/${encodeURIComponent(currentUser.email)}`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch notifications');
@@ -563,7 +563,7 @@ async function fetchNotifications() {
 
 async function markNotificationAsRead(id) {
   try {
-    const res = await fetch(`${API_BASE}/notifications/${id}/read`, {
+    const res = await fetch(`/notifications/${id}/read`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -579,7 +579,7 @@ async function markNotificationAsRead(id) {
 
 async function deleteNotification(id) {
   try {
-    const res = await fetch(`${API_BASE}/notifications/${id}`, {
+    const res = await fetch(`/notifications/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     });
@@ -594,7 +594,7 @@ async function deleteNotification(id) {
 
 async function deleteAllNotifications() {
   try {
-    const res = await fetch(`${API_BASE}/notifications/delete-all`, {
+    const res = await fetch(`/notifications/delete-all`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -648,12 +648,12 @@ function renderNotifications() {
             <p>لا توجد إشعارات</p>
           </div>
         ` : cachedNotifications.map(notification => {
-          const isRead = notification.is_read === 1 || notification.is_read === true;
-          const createdAt = notification.created_at ? new Date(notification.created_at).toLocaleString('ar-LY') : '-';
-          const typeIcon = getNotificationIcon(notification.type);
-          const typeColor = getNotificationColor(notification.type);
-          
-          return `
+    const isRead = notification.is_read === 1 || notification.is_read === true;
+    const createdAt = notification.created_at ? new Date(notification.created_at).toLocaleString('ar-LY') : '-';
+    const typeIcon = getNotificationIcon(notification.type);
+    const typeColor = getNotificationColor(notification.type);
+
+    return `
             <div class="notification-item ${isRead ? 'read' : 'unread'}" 
                  data-id="${notification.id}"
                  style="
@@ -710,7 +710,7 @@ function renderNotifications() {
               </div>
             </div>
           `;
-        }).join('')}
+  }).join('')}
       </div>
     </div>
   `;
@@ -787,7 +787,7 @@ async function renderRestaurant() {
   const ob = document.getElementById("owner-surplus-body");
   if (ob) {
     ob.innerHTML = "";
-  
+
     const surpluses = await fetchSurplusesFromServer();
     const mySurpluses = surpluses.filter(s => s.restaurant_email === currentUser.email);
 
@@ -827,7 +827,7 @@ async function renderRestaurant() {
     let myRequests = [];
     try {
       const res = await fetch(
-        `${API_BASE}/requests?restaurant_email=${encodeURIComponent(currentUser.email)}`,
+        `/requests?restaurant_email=${encodeURIComponent(currentUser.email)}`,
         { credentials: 'include' }
       );
 
@@ -890,11 +890,11 @@ async function renderRestaurant() {
 
     try {
       const ratingsRes = await fetch(
-        `${API_BASE}/ratings/restaurant/${encodeURIComponent(currentUser.email)}`,
+        `/ratings/restaurant/${encodeURIComponent(currentUser.email)}`,
         { credentials: 'include' }
       );
       const avgRes = await fetch(
-        `${API_BASE}/ratings/restaurant/${encodeURIComponent(currentUser.email)}/avg`,
+        `/ratings/restaurant/${encodeURIComponent(currentUser.email)}/avg`,
         { credentials: 'include' }
       );
 
@@ -915,11 +915,11 @@ async function renderRestaurant() {
       if (staffAvg > 0) validAverages.push(staffAvg);
       if (timelinessAvg > 0) validAverages.push(timelinessAvg);
       if (packagingAvg > 0) validAverages.push(packagingAvg);
-      
-      const overallAvg = validAverages.length > 0 
-        ? (validAverages.reduce((a, b) => a + b, 0) / validAverages.length) 
+
+      const overallAvg = validAverages.length > 0
+        ? (validAverages.reduce((a, b) => a + b, 0) / validAverages.length)
         : 0;
-      
+
       // Update rating stat card
       const statRating = document.getElementById("stat-rating");
       if (statRating) {
@@ -942,14 +942,14 @@ async function renderRestaurant() {
           const staffRating = parseFloat(e.staff_behavior_rating) || 0;
           const timelinessRating = parseFloat(e.timeliness_rating) || 0;
           const packagingRating = parseFloat(e.packaging_rating) || 0;
-          
+
           let validRatings = [];
           if (staffRating > 0) validRatings.push(staffRating);
           if (timelinessRating > 0) validRatings.push(timelinessRating);
           if (packagingRating > 0) validRatings.push(packagingRating);
-          
-          const overallRating = validRatings.length > 0 
-            ? (validRatings.reduce((a, b) => a + b, 0) / validRatings.length) 
+
+          const overallRating = validRatings.length > 0
+            ? (validRatings.reduce((a, b) => a + b, 0) / validRatings.length)
             : 0;
 
           const div = document.createElement("div");
@@ -981,7 +981,7 @@ async function renderRestaurant() {
   if (welcome && currentUser.name) {
     welcome.innerText = currentUser.name;
   }
-  
+
   // Update Charts and Statistics
   updateStatisticsCharts();
 }
@@ -991,11 +991,11 @@ function updateStatisticsCharts() {
   // Get requests data
   const rrb = document.getElementById("restaurant-requests-body");
   if (!rrb) return;
-  
+
   // Count requests by status
   const rows = rrb.querySelectorAll('tr');
   let accepted = 0, pending = 0, rejected = 0, total = 0;
-  
+
   rows.forEach(row => {
     if (row.querySelector('[colspan]')) return; // Skip "no requests" row
     total++;
@@ -1006,40 +1006,40 @@ function updateStatisticsCharts() {
       else pending++;
     }
   });
-  
+
   // Update stat cards
   const statPending = document.getElementById("stat-pending");
   const statRejected = document.getElementById("stat-rejected");
   if (statPending) statPending.textContent = pending;
   if (statRejected) statRejected.textContent = rejected;
-  
+
   // Update donut chart
   updateDonutChart(accepted, pending, rejected, total);
-  
+
   // Update legend
   const legendAccepted = document.getElementById("legend-accepted");
   const legendPending = document.getElementById("legend-pending");
   const legendRejected = document.getElementById("legend-rejected");
   const totalRequests = document.getElementById("total-requests");
-  
+
   if (legendAccepted) legendAccepted.textContent = accepted;
   if (legendPending) legendPending.textContent = pending;
   if (legendRejected) legendRejected.textContent = rejected;
   if (totalRequests) totalRequests.textContent = total;
-  
+
   // Update progress bars
   updateProgressBars(accepted, pending, rejected, total);
 }
 
 function updateDonutChart(accepted, pending, rejected, total) {
   const circumference = 2 * Math.PI * 40; // 251.2
-  
+
   const segmentAccepted = document.getElementById("segment-accepted");
   const segmentPending = document.getElementById("segment-pending");
   const segmentRejected = document.getElementById("segment-rejected");
-  
+
   if (!segmentAccepted || !segmentPending || !segmentRejected) return;
-  
+
   if (total === 0) {
     // No data - show empty ring
     segmentAccepted.style.strokeDasharray = `0 ${circumference}`;
@@ -1047,26 +1047,26 @@ function updateDonutChart(accepted, pending, rejected, total) {
     segmentRejected.style.strokeDasharray = `0 ${circumference}`;
     return;
   }
-  
+
   // Calculate percentages
   const acceptedPct = (accepted / total) * 100;
   const pendingPct = (pending / total) * 100;
   const rejectedPct = (rejected / total) * 100;
-  
+
   // Calculate stroke-dasharray values
   const acceptedDash = (acceptedPct / 100) * circumference;
   const pendingDash = (pendingPct / 100) * circumference;
   const rejectedDash = (rejectedPct / 100) * circumference;
-  
+
   // Calculate offsets (stroke-dashoffset)
   // Accepted starts at 0
   segmentAccepted.style.strokeDasharray = `${acceptedDash} ${circumference}`;
   segmentAccepted.style.strokeDashoffset = '0';
-  
+
   // Pending starts after accepted
   segmentPending.style.strokeDasharray = `${pendingDash} ${circumference}`;
   segmentPending.style.strokeDashoffset = `-${acceptedDash}`;
-  
+
   // Rejected starts after accepted + pending
   segmentRejected.style.strokeDasharray = `${rejectedDash} ${circumference}`;
   segmentRejected.style.strokeDashoffset = `-${acceptedDash + pendingDash}`;
@@ -1077,25 +1077,25 @@ function updateProgressBars(accepted, pending, rejected, total) {
   const acceptanceRate = total > 0 ? Math.round((accepted / total) * 100) : 0;
   const acceptanceRateEl = document.getElementById("acceptance-rate");
   const acceptanceBar = document.getElementById("acceptance-bar");
-  
+
   if (acceptanceRateEl) acceptanceRateEl.textContent = `${acceptanceRate}%`;
   if (acceptanceBar) acceptanceBar.style.width = `${acceptanceRate}%`;
-  
+
   // Active surpluses (get from stat-count)
   const surplusCount = parseInt(document.getElementById("stat-count")?.textContent || "0", 10);
   const activeSurpluses = document.getElementById("active-surpluses");
   const surplusesBar = document.getElementById("surpluses-bar");
-  
+
   // Max 10 for visual purposes
   const surplusesPct = Math.min((surplusCount / 10) * 100, 100);
   if (activeSurpluses) activeSurpluses.textContent = surplusCount;
   if (surplusesBar) surplusesBar.style.width = `${surplusesPct}%`;
-  
+
   // Interaction rate (accepted + rejected = total interactions)
   const interactions = accepted + rejected;
   const interactionRate = document.getElementById("interaction-rate");
   const interactionBar = document.getElementById("interaction-bar");
-  
+
   // Calculate as percentage of total requests
   const interactionPct = total > 0 ? Math.round((interactions / total) * 100) : 0;
   if (interactionRate) interactionRate.textContent = `${interactions} تفاعل`;
@@ -1141,14 +1141,14 @@ function openEditSurplusModal(surplus) {
     </div>
   `;
 
- 
+
 
   document.body.appendChild(modal);
- document.getElementById("edit-expiry").value = surplus.expiry_hours;
+  document.getElementById("edit-expiry").value = surplus.expiry_hours;
 
   // Add input validation for qty field - only allow numbers and no leading zeros
   const qtyInput = document.getElementById("edit-qty");
-  qtyInput.oninput = function() {
+  qtyInput.oninput = function () {
     this.value = this.value.replace(/[^0-9]/g, '').replace(/^0+/, '');
     // Reset error state when user types
     this.style.borderColor = '';
@@ -1157,7 +1157,7 @@ function openEditSurplusModal(surplus) {
 
   // Reset title error when user types
   const titleInput = document.getElementById("edit-title");
-  titleInput.oninput = function() {
+  titleInput.oninput = function () {
     this.style.borderColor = '';
     document.getElementById("edit-title-error").style.display = 'none';
   };
@@ -1174,7 +1174,7 @@ async function saveSurplusChanges(id) {
   const qtyInput = document.getElementById("edit-qty");
   const titleError = document.getElementById("edit-title-error");
   const qtyError = document.getElementById("edit-qty-error");
-  
+
   const title = titleInput.value.trim();
   const qty = qtyInput.value.trim();
   const expiry = Number(document.getElementById("edit-expiry").value.trim());
@@ -1194,14 +1194,14 @@ async function saveSurplusChanges(id) {
     showToast("أدخل عنوان الفائض", "warn");
     return false;
   }
-  
+
   // Check if title contains special characters
   if (!validTitlePattern.test(title)) {
     titleInput.style.borderColor = '#ef4444';
     titleError.style.display = 'block';
     return false;
   }
-  
+
   if (!qty) {
     showToast("أدخل الكمية", "warn");
     return false;
@@ -1217,7 +1217,7 @@ async function saveSurplusChanges(id) {
   }
 
   try {
-    const res = await fetch(`${API_BASE}/surpluses/${id}`, {
+    const res = await fetch(`/surpluses/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
@@ -1260,23 +1260,23 @@ async function setupAddSurplus() {
     // Function to show error below field
     function showFieldError(input, message) {
       if (!input) return;
-      
+
       // Remove any existing error message for this field
       const nextSibling = input.nextElementSibling;
       if (nextSibling && nextSibling.classList.contains('field-error-msg')) {
         nextSibling.remove();
       }
-      
+
       input.style.border = '2px solid #ef4444';
-      
+
       const errorDiv = document.createElement('div');
       errorDiv.className = 'field-error-msg';
       errorDiv.style.cssText = 'color: #ef4444; font-size: 13px; margin-top: 6px; margin-bottom: 10px; text-align: right;';
       errorDiv.textContent = message;
-      
+
       // Insert error message right after the input element
       input.insertAdjacentElement('afterend', errorDiv);
-      
+
       input.addEventListener('input', function resetError() {
         input.style.border = '';
         const nextEl = input.nextElementSibling;
@@ -1330,11 +1330,11 @@ async function setupAddSurplus() {
 
     // 4. Check surplus limit (max 5 surpluses per 24 hours)
     try {
-      const countRes = await fetch(`${API_BASE}/surpluses/count-today/${currentUser.id}`, {
+      const countRes = await fetch(`/surpluses/count-today/${currentUser.id}`, {
         method: "GET",
         credentials: 'include'
       });
-      
+
       if (countRes.ok) {
         const countData = await countRes.json();
         if (countData.count >= 5) {
@@ -1347,7 +1347,7 @@ async function setupAddSurplus() {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/surpluses`,{
+      const res = await fetch(`/surpluses`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1405,7 +1405,7 @@ document.addEventListener("click", async function (e) {
   const deleteNotifBtn = e.target.closest('.btn-delete-notification');
   if (deleteNotifBtn) {
     const id = deleteNotifBtn.dataset.id;
-    
+
     showConfirm('هل تريد حذف هذا الإشعار؟', async () => {
       deleteNotifBtn.disabled = true;
       deleteNotifBtn.innerText = 'جارٍ...';
@@ -1453,7 +1453,7 @@ document.addEventListener("click", async function (e) {
     const id = Number(dbtn.dataset.id);
 
     try {
-      const res = await fetch(`${API_BASE}/surpluses/${id}`, {
+      const res = await fetch(`/surpluses/${id}`, {
         method: "DELETE",
         credentials: 'include'
       });
@@ -1476,7 +1476,7 @@ document.addEventListener("click", async function (e) {
     const id = Number(acceptReqBtn.dataset.id);
 
     try {
-      const res = await fetch(`${API_BASE}/requests/${id}`, {
+      const res = await fetch(`/requests/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1499,7 +1499,7 @@ document.addEventListener("click", async function (e) {
     const id = Number(rejectReqBtn.dataset.id);
 
     try {
-      const res = await fetch(`${API_BASE}/requests/${id}`, {
+      const res = await fetch(`/requests/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1585,7 +1585,7 @@ function openEditProfileModal() {
     const mapContainer = document.getElementById("edit-profile-map");
     if (mapContainer && typeof L !== 'undefined') {
       const editMap = L.map("edit-profile-map").setView([currentLat, currentLng], 13);
-      
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap"
       }).addTo(editMap);
@@ -1595,7 +1595,7 @@ function openEditProfileModal() {
       editMarker.bindPopup("📍 موقعك الحالي").openPopup();
 
       // Click on map to update position
-      editMap.on("click", function(e) {
+      editMap.on("click", function (e) {
         const { lat, lng } = e.latlng;
         document.getElementById("lat").value = lat.toFixed(6);
         document.getElementById("lng").value = lng.toFixed(6);
@@ -1621,7 +1621,7 @@ function openEditProfileModal() {
     // New validation rules
     // الاسم يقبل حروف عربية أو إنجليزية + أرقام + مسافات
     const nameRegex = /^[\u0600-\u06FF\u0750-\u077Fa-zA-Z0-9\s]+$/;
-    
+
     if (!name) {
       showToast("يرجى إدخال الاسم", "danger");
       return;
@@ -1642,7 +1642,7 @@ function openEditProfileModal() {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/users/by-email/${encodeURIComponent(currentUser.email)}`, {
+      const res = await fetch(`/users/by-email/${encodeURIComponent(currentUser.email)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1653,7 +1653,7 @@ function openEditProfileModal() {
 
       showToast("تم تحديث الملف الشخصي بنجاح", "success");
       // modal.remove(); // تم تعطيله مؤقتاً لأخذ لقطة شاشة للتوثيق
-      
+
       // Refresh user data
       currentUser = await checkAuth();
       if (currentUser) await renderRestaurant();
@@ -1668,7 +1668,7 @@ function openEditProfileModal() {
 // Check Expiries
 async function checkExpiries() {
   try {
-    await fetch(`${API_BASE}/surpluses/check-expiries`, {
+    await fetch(`/surpluses/check-expiries`, {
       method: "POST",
       credentials: 'include'
     });
@@ -1893,7 +1893,7 @@ function openSecurityModal() {
       const input = wrapper.querySelector('input');
       const eyeOpen = btn.querySelector('.eye-open');
       const eyeClosed = btn.querySelector('.eye-closed');
-      
+
       if (input.type === 'password') {
         input.type = 'text';
         eyeOpen.style.display = 'none';
@@ -1934,7 +1934,7 @@ function openSecurityModal() {
     errorDiv.style.display = "none";
 
     try {
-      const res = await fetch(`${API_BASE}/auth/verify-password`, {
+      const res = await fetch(`/auth/verify-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -1999,7 +1999,7 @@ function openSecurityModal() {
 
     try {
       // Step 1: Check if email is available
-      const checkRes = await fetch(`${API_BASE}/auth/check-email-available`, {
+      const checkRes = await fetch(`/auth/check-email-available`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2013,7 +2013,7 @@ function openSecurityModal() {
       }
 
       // Step 2: Send OTP to new email
-      const otpRes = await fetch(`${API_BASE}/otp/send`, {
+      const otpRes = await fetch(`/otp/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2029,11 +2029,11 @@ function openSecurityModal() {
       // Success
       emailOtpSent = true;
       pendingNewEmail = newEmail;
-      
+
       emailStatus.textContent = "✓ تم إرسال رمز التحقق إلى البريد الجديد";
       emailStatus.style.color = "#22c55e";
       emailStatus.style.display = "block";
-      
+
       otpField.style.display = "block";
       btn.textContent = "إعادة الإرسال";
       btn.disabled = false;
@@ -2069,7 +2069,7 @@ function openSecurityModal() {
     otpStatus.style.display = "none";
 
     try {
-      const res = await fetch(`${API_BASE}/otp/verify`, {
+      const res = await fetch(`/otp/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2084,11 +2084,11 @@ function openSecurityModal() {
 
       // Success
       emailOtpVerified = true;
-      
+
       otpStatus.textContent = "✓ تم التحقق من البريد الإلكتروني بنجاح";
       otpStatus.style.color = "#22c55e";
       otpStatus.style.display = "block";
-      
+
       btn.textContent = "تم التحقق ✓";
       btn.style.background = "#22c55e";
       modal.querySelector("#email-otp-input").readOnly = true;
@@ -2118,7 +2118,7 @@ function openSecurityModal() {
 
     // Check if email changed and OTP verified
     const emailChanged = newEmail && newEmail !== currentUser.email;
-    
+
     if (emailChanged && !emailOtpVerified) {
       errorDiv.textContent = "يجب التحقق من البريد الإلكتروني الجديد عبر رمز OTP قبل الحفظ";
       errorDiv.style.display = "block";
@@ -2152,13 +2152,13 @@ function openSecurityModal() {
     // التحقق من رقم الهاتف - عرض الخطأ تحت الحقل مباشرة
     const phoneErrorDiv = modal.querySelector("#phone-error");
     const phoneInput = modal.querySelector("#new-phone-input");
-    
+
     // إزالة أي خطأ سابق
     if (phoneErrorDiv) {
       phoneErrorDiv.style.display = "none";
       phoneInput.style.border = "";
     }
-    
+
     if (newPhone && !phoneRegex.test(newPhone)) {
       let phoneErrorMsg = "";
       if (newPhone.length !== 10) {
@@ -2170,7 +2170,7 @@ function openSecurityModal() {
       } else {
         phoneErrorMsg = "رقم الهاتف غير صالح";
       }
-      
+
       if (phoneErrorDiv) {
         phoneErrorDiv.textContent = phoneErrorMsg;
         phoneErrorDiv.style.display = "block";
@@ -2178,19 +2178,19 @@ function openSecurityModal() {
       }
       return;
     }
-    
+
     // Check if phone number is already taken
     if (newPhone && newPhone !== currentUser.phone) {
       try {
-        const checkPhoneRes = await fetch(`${API_BASE}/auth/check-phone-available`, {
+        const checkPhoneRes = await fetch(`/auth/check-phone-available`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
           body: JSON.stringify({ phone: newPhone, currentPhone: currentUser.phone })
         });
-        
+
         const checkPhoneData = await checkPhoneRes.json();
-        
+
         if (!checkPhoneRes.ok || !checkPhoneData.available) {
           if (phoneErrorDiv) {
             phoneErrorDiv.textContent = "رقم الهاتف مستخدم بالفعل";
@@ -2210,7 +2210,7 @@ function openSecurityModal() {
     // التحقق من كلمة المرور - عرض الخطأ تحت الحقل مباشرة
     const passwordErrorDiv = modal.querySelector("#password-error");
     const passwordInput = modal.querySelector("#new-password-input");
-    
+
     // إزالة أي خطأ سابق
     if (passwordErrorDiv) {
       passwordErrorDiv.style.display = "none";
@@ -2264,7 +2264,7 @@ function openSecurityModal() {
 
     try {
       const updateData = {};
-      
+
       if (emailChanged && emailOtpVerified) {
         updateData.email = newEmail;
       }
@@ -2283,7 +2283,7 @@ function openSecurityModal() {
         return;
       }
 
-      const res = await fetch(`${API_BASE}/users/by-email/${encodeURIComponent(currentUser.email)}`, {
+      const res = await fetch(`/users/by-email/${encodeURIComponent(currentUser.email)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
