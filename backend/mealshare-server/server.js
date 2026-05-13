@@ -24,7 +24,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
+
     // Allow all localhost origins
     const allowedOrigins = [
       'http://127.0.0.1:5500',
@@ -36,7 +36,7 @@ const corsOptions = {
       'http://127.0.0.1:3001',
       'http://localhost:3001'
     ];
-    
+
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -58,20 +58,45 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session Configuration
+// app.use(session({
+//   name: 'mealshare_session',
+//   secret: 'mealshare_super_secret_key_2024_production_ready',
+//   resave: true,
+//   saveUninitialized: true, // Changed to true to ensure session cookie is always set
+//   rolling: true,
+//   cookie: {
+//     httpOnly: true,
+//     secure: false,          // false for HTTP (dev), true for HTTPS (production)
+//     sameSite: 'lax',        // 'lax' is safest for development
+//     maxAge: 24 * 60 * 60 * 1000,
+//     path: '/'
+//   }
+// }));
+
+
+
 app.use(session({
   name: 'mealshare_session',
-  secret: 'mealshare_super_secret_key_2024_production_ready',
-  resave: true,
-  saveUninitialized: true, // Changed to true to ensure session cookie is always set
-  rolling: true,
+  secret: process.env.SESSION_SECRET || 'mealshare_super_secret_key', // استخدم متغير بيئة للأمان
+  resave: false,
+  saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: false,          // false for HTTP (dev), true for HTTPS (production)
-    sameSite: 'lax',        // 'lax' is safest for development
-    maxAge: 24 * 60 * 60 * 1000,
-    path: '/'
-  }
+    secure: process.env.NODE_ENV === 'production', // ستكون true تلقائياً عند الرفع
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // مهم جداً للـ CORS
+    maxAge: 24 * 60 * 60 * 1000
+  },
+  proxy: true // Render يستخدم Proxy، يجب تفعيل هذا الخيار
 }));
+
+const allowedOrigins = [
+  'http://localhost:5500',
+  'https://your-site-name.onrender.com' // ضع رابط موقعك هنا بعد الحصول عليه
+];
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(projectRoot, 'Pages', 'index.html'));
+});
 
 // Debug Middleware
 app.use((req, res, next) => {
@@ -112,14 +137,14 @@ app.get('/', (req, res) => {
 
 // Test route
 app.get('/api/test', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'Server is Working!',
     sessionId: req.sessionID,
     hasUser: !!req.session.user,
     origin: req.headers.origin
   });
 
-  
+
 });
 
 // 404 Handler
