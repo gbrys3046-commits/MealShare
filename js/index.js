@@ -215,7 +215,7 @@ async function checkExistingSession() {
   }
 
   try {
-    const res = await fetch(`/auth/me`, {
+    const res = await fetch(`/api/auth/me`, {
       method: 'GET',
       credentials: 'include' // ⚠️ CRITICAL: Send cookies
     });
@@ -1000,7 +1000,7 @@ function setupAuth() {
       }
 
       try {
-        const res = await fetch(`/auth/login`, {
+        const res = await fetch(`/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include', // ⚠️ CRITICAL: Accept cookies from server
@@ -1091,7 +1091,7 @@ function setupAuth() {
 
           // OTP verified - now register the user
           const regData = window._pendingRegistration;
-          const regRes = await fetch(`/auth/register`, {
+          const regRes = await fetch(`/api/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
@@ -1110,7 +1110,7 @@ function setupAuth() {
           }
 
           // Auto-login after registration
-          const loginRes = await fetch(`/auth/login`, {
+          const loginRes = await fetch(`/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
@@ -1307,7 +1307,7 @@ function setupAuth() {
 
       try {
         // Check if email is already taken
-        const checkEmailRes = await fetch(`/auth/check-email-available`, {
+        const checkEmailRes = await fetch(`/api/auth/check-email-available`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1326,7 +1326,7 @@ function setupAuth() {
         }
 
         // Check if phone number is already taken
-        const checkPhoneRes = await fetch(`/auth/check-phone-available`, {
+        const checkPhoneRes = await fetch(`/api/auth/check-phone-available`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1442,7 +1442,7 @@ function setupAuth() {
           }
 
           // OTP verified - now reset password
-          const resetRes = await fetch(`/auth/reset-password`, {
+          const resetRes = await fetch(`/api/auth/reset-password`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
@@ -1514,7 +1514,7 @@ function setupAuth() {
 
       try {
         // Check if email exists
-        const checkRes = await fetch(`/auth/check-email`, {
+        const checkRes = await fetch(`/api/auth/check-email`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
