@@ -18,7 +18,7 @@ async function checkAuth() {
   try {
     console.log("🔍 Checking authentication... (Attempt", authCheckAttempts + ")");
 
-    const res = await fetch(`/auth/me`, {
+    const res = await fetch(`/api/auth/me`, {
       method: 'GET',
       credentials: 'include' // ⚠️ CRITICAL: Send cookies
     });
@@ -58,7 +58,7 @@ async function checkAuth() {
 // Logout Handler
 async function handleLogout() {
   try {
-    await fetch(`/auth/logout`, {
+    await fetch(`/api/auth/logout`, {
       method: 'POST',
       credentials: 'include'
     });
@@ -666,7 +666,7 @@ function isEmail(email) {
 // API Functions
 async function fetchUsers() {
   try {
-    const res = await fetch(`/users`, {
+    const res = await fetch(`/api/users`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch users');
@@ -679,7 +679,7 @@ async function fetchUsers() {
 
 async function fetchRequests() {
   try {
-    const res = await fetch(`/requests`, {
+    const res = await fetch(`/api/requests`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch requests');
@@ -692,7 +692,7 @@ async function fetchRequests() {
 
 async function fetchSurpluses() {
   try {
-    const res = await fetch(`/surpluses`, {
+    const res = await fetch(`/api/surpluses`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch surpluses');
@@ -705,7 +705,7 @@ async function fetchSurpluses() {
 
 async function deleteUser(id) {
   try {
-    const res = await fetch(`/users/${encodeURIComponent(id)}`, {
+    const res = await fetch(`/api/users/${encodeURIComponent(id)}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -721,7 +721,7 @@ async function deleteUser(id) {
 
 async function toggleUserStatus(id, isActive) {
   try {
-    const res = await fetch(`/users/${encodeURIComponent(id)}/status`, {
+    const res = await fetch(`/api/users/${encodeURIComponent(id)}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -738,7 +738,7 @@ async function toggleUserStatus(id, isActive) {
 
 async function createCharity(charityData) {
   try {
-    const res = await fetch(`/auth/register`, {
+    const res = await fetch(`/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
@@ -758,7 +758,7 @@ let cachedNotifications = [];
 
 async function fetchAdminNotifications() {
   try {
-    const res = await fetch(`/notifications/admin`, {
+    const res = await fetch(`/api/notifications/admin`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch notifications');
@@ -771,7 +771,7 @@ async function fetchAdminNotifications() {
 
 async function markNotificationAsRead(id) {
   try {
-    const res = await fetch(`/notifications/${id}/read`, {
+    const res = await fetch(`/api/notifications/${id}/read`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -787,7 +787,7 @@ async function markNotificationAsRead(id) {
 
 async function deleteNotification(id) {
   try {
-    const res = await fetch(`/notifications/${id}`, {
+    const res = await fetch(`/api/notifications/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     });
@@ -802,7 +802,7 @@ async function deleteNotification(id) {
 
 async function deleteAllNotifications() {
   try {
-    const res = await fetch(`/notifications/delete-all`, {
+    const res = await fetch(`/api/notifications/delete-all`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -1482,7 +1482,7 @@ function initCharityForm() {
 
     // Check if email is already taken
     try {
-      const checkEmailRes = await fetch(`/auth/check-email-available`, {
+      const checkEmailRes = await fetch(`/api/auth/check-email-available`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1511,7 +1511,7 @@ function initCharityForm() {
 
     // Check if phone number is already taken
     try {
-      const checkPhoneRes = await fetch(`/auth/check-phone-available`, {
+      const checkPhoneRes = await fetch(`/api/auth/check-phone-available`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1692,7 +1692,7 @@ document.addEventListener('click', async function (e) {
       warnBtn.innerText = 'جارٍ الإرسال...';
 
       try {
-        const res = await fetch(`/notifications`, {
+        const res = await fetch(`/api/notifications`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',

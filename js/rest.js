@@ -476,7 +476,7 @@ async function checkAuth() {
   try {
     console.log("🔍 Checking authentication... (Attempt", authCheckAttempts + ")");
 
-    const res = await fetch(`/auth/me`, {
+    const res = await fetch(`/api/auth/me`, {
       method: 'GET',
       credentials: 'include' // ⚠️ CRITICAL: Send cookies
     });
@@ -511,7 +511,7 @@ async function checkAuth() {
 // Logout Handler
 async function handleLogout() {
   try {
-    await fetch(`/auth/logout`, {
+    await fetch(`/api/auth/logout`, {
       method: 'POST',
       credentials: 'include'
     });
@@ -532,7 +532,7 @@ document.addEventListener("click", (e) => {
 // Fetch Surpluses
 async function fetchSurplusesFromServer() {
   try {
-    const res = await fetch(`/surpluses`, {
+    const res = await fetch(`/api/surpluses`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error("Failed to fetch surpluses");
@@ -550,7 +550,7 @@ async function fetchNotifications() {
   try {
     // Fetch user notifications by email instead of role
     if (!currentUser?.email) return [];
-    const res = await fetch(`/notifications/email/${encodeURIComponent(currentUser.email)}`, {
+    const res = await fetch(`/api/notifications/email/${encodeURIComponent(currentUser.email)}`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch notifications');
@@ -563,7 +563,7 @@ async function fetchNotifications() {
 
 async function markNotificationAsRead(id) {
   try {
-    const res = await fetch(`/notifications/${id}/read`, {
+    const res = await fetch(`/api/notifications/${id}/read`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -579,7 +579,7 @@ async function markNotificationAsRead(id) {
 
 async function deleteNotification(id) {
   try {
-    const res = await fetch(`/notifications/${id}`, {
+    const res = await fetch(`/api/notifications/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     });
@@ -594,7 +594,7 @@ async function deleteNotification(id) {
 
 async function deleteAllNotifications() {
   try {
-    const res = await fetch(`/notifications/delete-all`, {
+    const res = await fetch(`/api/notifications/delete-all`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -827,7 +827,7 @@ async function renderRestaurant() {
     let myRequests = [];
     try {
       const res = await fetch(
-        `/requests?restaurant_email=${encodeURIComponent(currentUser.email)}`,
+        `/api/requests?restaurant_email=${encodeURIComponent(currentUser.email)}`,
         { credentials: 'include' }
       );
 
@@ -890,11 +890,11 @@ async function renderRestaurant() {
 
     try {
       const ratingsRes = await fetch(
-        `/ratings/restaurant/${encodeURIComponent(currentUser.email)}`,
+        `/api/ratings/restaurant/${encodeURIComponent(currentUser.email)}`,
         { credentials: 'include' }
       );
       const avgRes = await fetch(
-        `/ratings/restaurant/${encodeURIComponent(currentUser.email)}/avg`,
+        `/api/ratings/restaurant/${encodeURIComponent(currentUser.email)}/avg`,
         { credentials: 'include' }
       );
 
@@ -1217,7 +1217,7 @@ async function saveSurplusChanges(id) {
   }
 
   try {
-    const res = await fetch(`/surpluses/${id}`, {
+    const res = await fetch(`/api/surpluses/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
@@ -1330,7 +1330,7 @@ async function setupAddSurplus() {
 
     // 4. Check surplus limit (max 5 surpluses per 24 hours)
     try {
-      const countRes = await fetch(`/surpluses/count-today/${currentUser.id}`, {
+      const countRes = await fetch(`/api/surpluses/count-today/${currentUser.id}`, {
         method: "GET",
         credentials: 'include'
       });
@@ -1347,7 +1347,7 @@ async function setupAddSurplus() {
     }
 
     try {
-      const res = await fetch(`/surpluses`, {
+      const res = await fetch(`/api/surpluses`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1453,7 +1453,7 @@ document.addEventListener("click", async function (e) {
     const id = Number(dbtn.dataset.id);
 
     try {
-      const res = await fetch(`/surpluses/${id}`, {
+      const res = await fetch(`/api/surpluses/${id}`, {
         method: "DELETE",
         credentials: 'include'
       });
@@ -1476,7 +1476,7 @@ document.addEventListener("click", async function (e) {
     const id = Number(acceptReqBtn.dataset.id);
 
     try {
-      const res = await fetch(`/requests/${id}`, {
+      const res = await fetch(`/api/requests/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1499,7 +1499,7 @@ document.addEventListener("click", async function (e) {
     const id = Number(rejectReqBtn.dataset.id);
 
     try {
-      const res = await fetch(`/requests/${id}`, {
+      const res = await fetch(`/api/requests/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1642,7 +1642,7 @@ function openEditProfileModal() {
     }
 
     try {
-      const res = await fetch(`/users/by-email/${encodeURIComponent(currentUser.email)}`, {
+      const res = await fetch(`/api/users/by-email/${encodeURIComponent(currentUser.email)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -1668,7 +1668,7 @@ function openEditProfileModal() {
 // Check Expiries
 async function checkExpiries() {
   try {
-    await fetch(`/surpluses/check-expiries`, {
+    await fetch(`/api/surpluses/check-expiries`, {
       method: "POST",
       credentials: 'include'
     });
@@ -1934,7 +1934,7 @@ function openSecurityModal() {
     errorDiv.style.display = "none";
 
     try {
-      const res = await fetch(`/auth/verify-password`, {
+      const res = await fetch(`/api/auth/verify-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -1999,7 +1999,7 @@ function openSecurityModal() {
 
     try {
       // Step 1: Check if email is available
-      const checkRes = await fetch(`/auth/check-email-available`, {
+      const checkRes = await fetch(`/api/auth/check-email-available`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2013,7 +2013,7 @@ function openSecurityModal() {
       }
 
       // Step 2: Send OTP to new email
-      const otpRes = await fetch(`/otp/send`, {
+      const otpRes = await fetch(`/api/otp/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2069,7 +2069,7 @@ function openSecurityModal() {
     otpStatus.style.display = "none";
 
     try {
-      const res = await fetch(`/otp/verify`, {
+      const res = await fetch(`/api/otp/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2182,7 +2182,7 @@ function openSecurityModal() {
     // Check if phone number is already taken
     if (newPhone && newPhone !== currentUser.phone) {
       try {
-        const checkPhoneRes = await fetch(`/auth/check-phone-available`, {
+        const checkPhoneRes = await fetch(`/api/auth/check-phone-available`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -2283,7 +2283,7 @@ function openSecurityModal() {
         return;
       }
 
-      const res = await fetch(`/users/by-email/${encodeURIComponent(currentUser.email)}`, {
+      const res = await fetch(`/api/users/by-email/${encodeURIComponent(currentUser.email)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -1071,7 +1071,7 @@ function setupAuth() {
 
         try {
           // Verify OTP
-          const verifyRes = await fetch(`/otp/verify`, {
+          const verifyRes = await fetch(`/api/otp/verify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
@@ -1345,7 +1345,7 @@ function setupAuth() {
         }
 
         // Send OTP
-        const otpRes = await fetch(`/otp/send`, {
+        const otpRes = await fetch(`/api/otp/send`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -1423,7 +1423,7 @@ function setupAuth() {
 
         try {
           // Verify OTP first
-          const verifyRes = await fetch(`/otp/verify`, {
+          const verifyRes = await fetch(`/api/otp/verify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
@@ -1531,7 +1531,7 @@ function setupAuth() {
         }
 
         // Email exists - send OTP
-        const otpRes = await fetch(`/otp/send`, {
+        const otpRes = await fetch(`/api/otp/send`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',

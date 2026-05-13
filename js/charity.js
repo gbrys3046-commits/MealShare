@@ -17,7 +17,7 @@ async function checkAuth() {
   try {
     console.log("🔍 Checking authentication... (Attempt", authCheckAttempts + ")");
 
-    const res = await fetch(`/auth/me`, {
+    const res = await fetch(`/api/auth/me`, {
       method: 'GET',
       credentials: 'include'
     });
@@ -52,7 +52,7 @@ async function checkAuth() {
 // Logout Handler
 async function handleLogout() {
   try {
-    await fetch(`/auth/logout`, {
+    await fetch(`/api/auth/logout`, {
       method: 'POST',
       credentials: 'include'
     });
@@ -452,7 +452,7 @@ async function fetchSurpluses() {
   try {
     // Pass charity email to also display surpluses reserved for them
     const charityEmail = currentUser?.email ? `?charity_email=${encodeURIComponent(currentUser.email)}` : '';
-    const res = await fetch(`/surpluses${charityEmail}`, {
+    const res = await fetch(`/api/surpluses${charityEmail}`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error("Failed to fetch surpluses");
@@ -466,7 +466,7 @@ async function fetchSurpluses() {
 async function fetchMyRequests(charityEmail) {
   try {
     const res = await fetch(
-      `/requests?charity_email=${encodeURIComponent(charityEmail)}`,
+      `/api/requests?charity_email=${encodeURIComponent(charityEmail)}`,
       { credentials: 'include' }
     );
     if (!res.ok) throw new Error("Failed to fetch requests");
@@ -479,7 +479,7 @@ async function fetchMyRequests(charityEmail) {
 
 async function fetchUsers() {
   try {
-    const res = await fetch(`/users`, {
+    const res = await fetch(`/api/users`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error("Failed to fetch users");
@@ -493,7 +493,7 @@ async function fetchUsers() {
 async function fetchRatings(restaurantEmail) {
   try {
     const res = await fetch(
-      `/ratings/restaurant/${encodeURIComponent(restaurantEmail)}`,
+      `/api/ratings/restaurant/${encodeURIComponent(restaurantEmail)}`,
       { credentials: 'include' }
     );
     if (!res.ok) throw new Error("Failed to fetch ratings");
@@ -507,7 +507,7 @@ async function fetchRatings(restaurantEmail) {
 async function fetchRatingsAvg(restaurantEmail) {
   try {
     const res = await fetch(
-      `/ratings/restaurant/${encodeURIComponent(restaurantEmail)}/avg`,
+      `/api/ratings/restaurant/${encodeURIComponent(restaurantEmail)}/avg`,
       { credentials: 'include' }
     );
     if (!res.ok) throw new Error("Failed to fetch ratings avg");
@@ -520,7 +520,7 @@ async function fetchRatingsAvg(restaurantEmail) {
 
 async function submitRating(ratingData) {
   try {
-    const res = await fetch(`/ratings`, {
+    const res = await fetch(`/api/ratings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
@@ -537,7 +537,7 @@ async function submitRating(ratingData) {
 // Check if a rating exists for a specific request
 async function checkRatingExists(requestId) {
   try {
-    const res = await fetch(`/ratings/check/${requestId}`, {
+    const res = await fetch(`/api/ratings/check/${requestId}`, {
       credentials: 'include'
     });
     if (!res.ok) return { hasRating: false };
@@ -550,7 +550,7 @@ async function checkRatingExists(requestId) {
 
 async function createRequest(requestData) {
   try {
-    const res = await fetch(`/requests`, {
+    const res = await fetch(`/api/requests`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
@@ -566,7 +566,7 @@ async function createRequest(requestData) {
 
 async function updateUserProfile(email, data) {
   try {
-    const res = await fetch(`/users/by-email/${encodeURIComponent(email)}`, {
+    const res = await fetch(`/api/users/by-email/${encodeURIComponent(email)}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: 'include',
@@ -596,7 +596,7 @@ async function fetchNotifications() {
   try {
     // Fetch user notifications by email instead of role
     if (!currentUser?.email) return [];
-    const res = await fetch(`/notifications/email/${encodeURIComponent(currentUser.email)}`, {
+    const res = await fetch(`/api/notifications/email/${encodeURIComponent(currentUser.email)}`, {
       credentials: 'include'
     });
     if (!res.ok) throw new Error('Failed to fetch notifications');
@@ -609,7 +609,7 @@ async function fetchNotifications() {
 
 async function markNotificationAsRead(id) {
   try {
-    const res = await fetch(`/notifications/${id}/read`, {
+    const res = await fetch(`/api/notifications/${id}/read`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
@@ -625,7 +625,7 @@ async function markNotificationAsRead(id) {
 
 async function deleteNotification(id) {
   try {
-    const res = await fetch(`/notifications/${id}`, {
+    const res = await fetch(`/api/notifications/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     });
@@ -640,7 +640,7 @@ async function deleteNotification(id) {
 
 async function deleteAllNotifications() {
   try {
-    const res = await fetch(`/notifications/delete-all`, {
+    const res = await fetch(`/api/notifications/delete-all`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -865,7 +865,7 @@ async function renderCharity() {
 
   try {
     // Cleanup old requests (accepted/rejected older than 7 days)
-    fetch(`/requests/cleanup-old`, {
+    fetch(`/api/requests/cleanup-old`, {
       method: 'POST',
       credentials: 'include'
     }).catch(() => { });
@@ -1967,7 +1967,7 @@ function openSecurityModal() {
     errorDiv.style.display = "none";
 
     try {
-      const res = await fetch(`/auth/verify-password`, {
+      const res = await fetch(`/api/auth/verify-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2032,7 +2032,7 @@ function openSecurityModal() {
 
     try {
       // Step 1: Check if email is available
-      const checkRes = await fetch(`/auth/check-email-available`, {
+      const checkRes = await fetch(`/api/auth/check-email-available`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2046,7 +2046,7 @@ function openSecurityModal() {
       }
 
       // Step 2: Send OTP to new email
-      const otpRes = await fetch(`/otp/send`, {
+      const otpRes = await fetch(`/api/otp/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2102,7 +2102,7 @@ function openSecurityModal() {
     otpStatus.style.display = "none";
 
     try {
-      const res = await fetch(`/otp/verify`, {
+      const res = await fetch(`/api/otp/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -2215,7 +2215,7 @@ function openSecurityModal() {
     // Check if phone number is already taken
     if (newPhone && newPhone !== currentUser.phone) {
       try {
-        const checkPhoneRes = await fetch(`/auth/check-phone-available`, {
+        const checkPhoneRes = await fetch(`/api/auth/check-phone-available`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: 'include',
@@ -2316,7 +2316,7 @@ function openSecurityModal() {
         return;
       }
 
-      const res = await fetch(`/users/by-email/${encodeURIComponent(currentUser.email)}`, {
+      const res = await fetch(`/api/users/by-email/${encodeURIComponent(currentUser.email)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
